@@ -36,6 +36,8 @@ export class GaemComponent implements OnInit {
           event.previousIndex,
           event.currentIndex
         );
+        // event.container.element.nativeElement.classList.remove('h-48');
+        // event.container.element.nativeElement.classList.remove('w-32');
       }
     } else {
       transferArrayItem(
@@ -44,6 +46,8 @@ export class GaemComponent implements OnInit {
         event.previousIndex,
         event.currentIndex
       );
+      // event.previousContainer.element.nativeElement.classList.add('h-48');
+      // event.previousContainer.element.nativeElement.classList.add('w-32');
     }
   }
 

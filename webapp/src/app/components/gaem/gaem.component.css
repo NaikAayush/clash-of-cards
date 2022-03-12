@@ -1,5 +1,5 @@
 .card-size {
-  height: 12rem;
+  max-height: 12rem;
 }
 
 .card {

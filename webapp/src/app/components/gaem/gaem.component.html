@@ -21,7 +21,7 @@
       </div>
       <div class="flex flex-row justify-between grow" cdkDropListGroup>
         <div
-          class="fighting-list w-32 card-size transition-shadow duration-300 flex flex-row justify-between mx-16 my-2 card-size self-center rounded-xl bg-gray-100"
+          class="fighting-list h-48 w-32 card-size transition-shadow duration-300 flex flex-row justify-between mx-16 my-2 card-size self-center rounded-xl bg-gray-100"
           cdkDropList
           (cdkDropListDropped)="dropCard($event, 1)"
           [cdkDropListConnectedTo]="[deckList]"
@@ -39,7 +39,7 @@
           </div>
         </div>
         <div
-          class="fighting-list w-32 card-size transition-shadow duration-300 flex flex-row justify-between mx-16 my-2 card-size self-center rounded-xl bg-gray-100"
+          class="fighting-list h-48 w-32 card-size transition-shadow duration-300 flex flex-row justify-between mx-16 my-2 card-size self-center rounded-xl bg-gray-100"
           cdkDropList
           (cdkDropListDropped)="dropCard($event, 2)"
           [cdkDropListConnectedTo]="[deckList]"
