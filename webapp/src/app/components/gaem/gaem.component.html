@@ -36,6 +36,12 @@
             *ngFor="let card of fightingZones[0]"
           >
             <img class="card-size" src="{{ card.meta.imgUrl }}" />
+            <div class="w-32 bg-white h-1 relative top-1">
+              <div
+                class="h-1 bg-green-400"
+                style.height.%="{{ (card.health * 100) / card.meta.maxHealth }}"
+              ></div>
+            </div>
           </div>
         </div>
         <div
