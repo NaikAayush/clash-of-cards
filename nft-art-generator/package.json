@@ -1,0 +1,16 @@
+{
+  "name": "nft",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "randos": "node ."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "scale-that-svg": "^1.0.5",
+    "sharp": "^0.29.3"
+  }
+}
