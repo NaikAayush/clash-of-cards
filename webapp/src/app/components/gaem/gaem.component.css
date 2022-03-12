@@ -1,5 +1,5 @@
 .card-size {
-  max-height: 12rem;
+  /* max-height: 12rem; */
 }
 
 .card {
@@ -21,7 +21,7 @@
 }
 
 .player-deck {
-  min-height: 12rem;
+  /* min-height: 12rem; */
 }
 
 .player-deck.cdk-drop-list-dragging .card:not(.cdk-drag-placeholder) {
