@@ -23,7 +23,7 @@ const template = `
 
 const takenNames = {};
 const takenFaces = {};
-let idx = 1;
+let idx = 10;
 
 function randInt(max) {
   return Math.floor(Math.random() * (max + 1));
@@ -31,6 +31,11 @@ function randInt(max) {
 
 function randElement(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
+}
+
+function getRandomColor() {
+  const colors = "#7D72B4 #B0D033 #0C7FC3 #EC2E83 #FFC90D #870559".split(" ");
+  return randElement(colors);
 }
 
 function getRandomName() {
@@ -101,22 +106,19 @@ async function createImage(idx) {
     const name = fullName.split("-")[1];
 
     face[takenFaces] = face;
-    replaceName(adj, name);
 
-    function replaceName(adj, name) {
-      let data = readFileSync("./layers/data1.svg", "utf-8");
-      data = data.replace("Moshi", capitalizeFirstLetter(adj));
-      data = data.replace("Moshu", capitalizeFirstLetter(name));
-      writeFileSync("./layers/data2.svg", data);
-    }
-
+    const headData = await getLayer(`head${head}`);
+    let data = await getLayer("data1");
+    data = data.replace("Moshi", capitalizeFirstLetter(adj));
+    data = data.replace("Moshu", capitalizeFirstLetter(name));
+    console.log(data);
     const final = template
       .replace("<!-- bg -->", await getLayer(`bg${bg}`))
       .replace("<!-- frame -->", await getLayer(`frame${frame}`))
-      .replace("<!-- head -->", await getLayer(`head${head}`))
+      .replace("<!-- head -->", headData.replace("#7D72B4", getRandomColor()))
       .replace("<!-- face -->", await getLayer(`face${face_}`))
       .replace("<!-- data -->", await getLayer("data0"))
-      .replace("<!-- data1 -->", await getLayer("data2"));
+      .replace("<!-- data1 -->", data);
     //   .replace("<!-- nose -->", getLayer(`nose${nose}`))
     //   .replace("<!-- mouth -->", getLayer(`mouth${mouth}`))
     //   .replace("<!-- beard -->", getLayer(`beard${beard}`, 0.5));
