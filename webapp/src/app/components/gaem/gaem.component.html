@@ -1,28 +1,75 @@
 <div class="game-board h-screen w-screen">
-  <div class="player-deck rounded-xl bg-blue-600 flex flex-col justify-between">
-    <div class="w-40 h-24 bg-white m-8 rounded-xl"></div>
-    <div class="w-40 h-24 bg-white m-8 rounded-xl"></div>
-    <div class="w-40 h-24 bg-white m-8 rounded-xl"></div>
-    <div class="w-40 h-24 bg-white m-8 rounded-xl"></div>
+  <div
+    class="player-deck rounded-xl bg-blue-600 flex flex-col justify-between p-8"
+    cdkDropList
+    (cdkDropListDropped)="dropCard($event)"
+    [cdkDropListConnectedTo]="[fightingZone1, fightingZone2]"
+    [cdkDropListData]="deckCards"
+    #deckList="cdkDropList"
+  >
+    <div
+      class="card w-40 h-24 bg-gray-300 rounded-xl text-center"
+      cdkDrag
+      cdkDragBoundary=".game-board"
+      *ngFor="let card of deckCards"
+    >
+      {{ card }}
+    </div>
   </div>
-  <div class="fight-area rounded-xl bg-yellow-300">
-    <div
-      class="enemy-slot-1 bg-white w-40 h-24 justify-center self-center rounded-xl"
-    ></div>
-    <div
-      class="enemy-slot-2 bg-white w-40 h-24 justify-center self-center rounded-xl"
-    ></div>
-    <div
-      class="player-slot-2 bg-white w-40 h-24 justify-center self-center rounded-xl"
-    ></div>
-    <div
-      class="player-slot-1 bg-white w-40 h-24 justify-center self-center rounded-xl"
-    ></div>
+  <div
+    class="fight-area rounded-xl bg-yellow-300 flex flex-row justify-between"
+  >
+    <div>
+      <div
+        class="fighting-list flex flex-col justify-between mx-12 my-40 w-40 h-24 self-center rounded-xl bg-gray-100"
+        cdkDropList
+        (cdkDropListDropped)="dropCard($event, 1)"
+        [cdkDropListConnectedTo]="[deckList]"
+        [cdkDropListData]="fightingZones[0]"
+        [cdkDropListEnterPredicate]="canBeDroppedToFight"
+        #fightingZone1="cdkDropList"
+      >
+        <div
+          class="card w-40 h-24 bg-gray-300 rounded-xl text-center"
+          cdkDrag
+          cdkDragBoundary=".game-board"
+          *ngFor="let card of fightingZones[0]"
+        >
+          {{ card }}
+        </div>
+      </div>
+      <div
+        class="fighting-list flex flex-col justify-between mx-12 my-40 w-40 h-24 self-center rounded-xl bg-gray-100"
+        cdkDropList
+        (cdkDropListDropped)="dropCard($event, 2)"
+        [cdkDropListConnectedTo]="[deckList]"
+        [cdkDropListData]="fightingZones[1]"
+        [cdkDropListEnterPredicate]="canBeDroppedToFight"
+        #fightingZone2="cdkDropList"
+      >
+        <div
+          class="card w-40 h-24 bg-gray-300 rounded-xl text-center"
+          cdkDrag
+          cdkDragBoundary=".game-board"
+          *ngFor="let card of fightingZones[1]"
+        >
+          {{ card }}
+        </div>
+      </div>
+    </div>
+    <div class="flex flex-col justify-between mx-12 my-40">
+      <div
+        class="bg-gray-300 w-40 h-24 justify-center self-center rounded-xl"
+      ></div>
+      <div
+        class="bg-gray-300 w-40 h-24 justify-center self-center rounded-xl"
+      ></div>
+    </div>
   </div>
   <div class="enemy-deck rounded-xl bg-red-500 flex flex-col justify-between">
-    <div class="w-40 h-24 bg-white m-8 rounded-xl"></div>
-    <div class="w-40 h-24 bg-white m-8 rounded-xl"></div>
-    <div class="w-40 h-24 bg-white m-8 rounded-xl"></div>
-    <div class="w-40 h-24 bg-white m-8 rounded-xl"></div>
+    <div class="w-40 h-24 bg-gray-300 m-8 rounded-xl"></div>
+    <div class="w-40 h-24 bg-gray-300 m-8 rounded-xl"></div>
+    <div class="w-40 h-24 bg-gray-300 m-8 rounded-xl"></div>
+    <div class="w-40 h-24 bg-gray-300 m-8 rounded-xl"></div>
   </div>
 </div>
