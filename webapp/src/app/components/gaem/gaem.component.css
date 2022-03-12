@@ -1,0 +1,41 @@
+.game-board {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  grid-template-rows: repeat(6, 1fr);
+  grid-column-gap: 0px;
+  grid-row-gap: 0px;
+}
+
+.player-deck {
+  grid-area: 2 / 1 / 6 / 2;
+}
+
+.fight-area {
+  grid-area: 2 / 3 / 6 / 6;
+
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(5, 1fr);
+  grid-column-gap: 0px;
+  grid-row-gap: 0px;
+}
+
+.enemy-slot-1 {
+  grid-area: 2 / 4 / 3 / 5;
+}
+
+.enemy-slot-2 {
+  grid-area: 4 / 4 / 5 / 5;
+}
+
+.player-slot-2 {
+  grid-area: 4 / 2 / 5 / 3;
+}
+
+.player-slot-1 {
+  grid-area: 2 / 2 / 3 / 3;
+}
+
+.enemy-deck {
+  grid-area: 2 / 7 / 6 / 8;
+}
