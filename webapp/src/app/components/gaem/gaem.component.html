@@ -1,4 +1,7 @@
-<div class="flex flex-col h-screen grow">
+<div class="flex flex-col sm:flex-row h-screen items-center">
+  <div class="w-full sm:w-1/5 flex flex-col items-center">
+    <div>Score</div>
+  </div>
   <div class="game-board w-full sm:w-3/5 self-center flex flex-auto flex-col">
     <!-- <div
       class="enemy-deck rounded-xl bg-red-500 flex flex-row justify-between p-8 grow"
@@ -39,7 +42,7 @@
             <div class="w-32 bg-white h-1 relative top-1">
               <div
                 class="h-1 bg-green-400"
-                style.height.%="{{ (card.health * 100) / card.meta.maxHealth }}"
+                style.width.%="{{ (card.health * 100) / card.meta.maxHealth }}"
               ></div>
             </div>
           </div>
@@ -63,7 +66,7 @@
             <div class="w-32 bg-white h-1 relative top-1">
               <div
                 class="h-1 bg-green-400"
-                style.height.%="{{ (card.health * 100) / card.meta.maxHealth }}"
+                style.width.%="{{ (card.health * 100) / card.meta.maxHealth }}"
               ></div>
             </div>
           </div>
@@ -89,10 +92,18 @@
         <div class="w-32 bg-white h-1 relative top-1">
           <div
             class="h-1 bg-green-400"
-            style.height.%="{{ (card.health * 100) / card.meta.maxHealth }}"
+            style.width.%="{{ (card.health * 100) / card.meta.maxHealth }}"
           ></div>
         </div>
       </div>
     </div>
+  </div>
+  <div class="w-full sm:w-1/5 flex flex-col items-center">
+    <button
+      class="p-3 border-4 rounded-xl text-4xl border-blue-400 hover:border-blue-500 hover:border-8 hover:bg-blue-100 transition-all"
+      (click)="continue()"
+    >
+      Continue
+    </button>
   </div>
 </div>

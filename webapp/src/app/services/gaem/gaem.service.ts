@@ -24,6 +24,13 @@ export class GaemService {
       new Card(someCardMeta),
       new Card(someCardMeta),
     ];
+    for (let i = 0; i < this.deckCards.length; ++i) {
+      this.deckCards[i].takeDamage((i + 1) * 50);
+    }
+  }
+
+  hasCardsLeft(): boolean {
+    return this.deckCards.length > 0;
   }
 
   serveHand(req: number): Card[] {

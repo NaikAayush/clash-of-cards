@@ -12,7 +12,7 @@ export class Card {
   }
 
   public takeDamage(damage: number): boolean {
-    if (damage > this.health) {
+    if (damage < this.health) {
       this.health -= damage;
     } else {
       this.health = 0;
