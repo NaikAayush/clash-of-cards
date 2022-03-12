@@ -7,6 +7,7 @@ import {
 } from '@angular/cdk/drag-drop';
 import { Component, OnInit } from '@angular/core';
 import { GaemService } from 'src/app/services/gaem/gaem.service';
+import { Card } from 'src/app/models/card';
 
 @Component({
   selector: 'app-gaem',
@@ -14,14 +15,16 @@ import { GaemService } from 'src/app/services/gaem/gaem.service';
   styleUrls: ['./gaem.component.css'],
 })
 export class GaemComponent implements OnInit {
-  public deckCards: string[] = ['one', 'two', 'three', 'four'];
-  public fightingZones: string[][] = [[], []];
+  public deckCards: Card[];
+  public fightingZones: Card[][] = [[], []];
 
-  constructor(service: GaemService) {}
+  constructor(service: GaemService) {
+    this.deckCards = service.serveHand(4);
+  }
 
   ngOnInit(): void {}
 
-  dropCard(event: CdkDragDrop<string[]>, targetNumber: number = 0) {
+  dropCard(event: CdkDragDrop<Card[]>, targetNumber: number = 0) {
     if (event.previousContainer === event.container) {
       moveItemInArray(
         event.container.data,

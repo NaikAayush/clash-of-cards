@@ -13,10 +13,10 @@
     >
       <div class="flex flex-row justify-between mx-16 my-2 grow">
         <div class="bg-gray-300 justify-center self-center rounded-xl">
-          <img class="card-size" src="assets/images/card-example.svg" />
+          <img class="card-size" src="assets/images/card-background.svg" />
         </div>
         <div class="bg-gray-300 justify-center self-center rounded-xl">
-          <img class="card-size" src="assets/images/card-example.svg" />
+          <img class="card-size" src="assets/images/card-background.svg" />
         </div>
       </div>
       <div class="flex flex-row justify-between grow" cdkDropListGroup>
@@ -35,7 +35,7 @@
             cdkDragBoundary=".game-board"
             *ngFor="let card of fightingZones[0]"
           >
-            <img class="card-size" src="assets/images/card-example.svg" />
+            <img class="card-size" src="{{ card.meta.imgUrl }}" />
           </div>
         </div>
         <div
@@ -53,7 +53,13 @@
             cdkDragBoundary=".game-board"
             *ngFor="let card of fightingZones[1]"
           >
-            <img class="card-size" src="assets/images/card-example.svg" />
+            <img class="card-size" src="{{ card.meta.imgUrl }}" />
+            <div class="w-32 bg-white h-1 relative top-1">
+              <div
+                class="h-1 bg-green-400"
+                style.height.%="{{ (card.health * 100) / card.meta.maxHealth }}"
+              ></div>
+            </div>
           </div>
         </div>
       </div>
@@ -73,7 +79,13 @@
         cdkDragBoundary=".game-board"
         *ngFor="let card of deckCards"
       >
-        <img class="card-size" src="assets/images/card-example.svg" />
+        <img class="card-size" src="{{ card.meta.imgUrl }}" />
+        <div class="w-32 bg-white h-1 relative top-1">
+          <div
+            class="h-1 bg-green-400"
+            style.height.%="{{ (card.health * 100) / card.meta.maxHealth }}"
+          ></div>
+        </div>
       </div>
     </div>
   </div>

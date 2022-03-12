@@ -1,30 +1,45 @@
 import { Injectable } from '@angular/core';
-import { UrlHandlingStrategy } from '@angular/router';
+import { Card, CardMeta } from 'src/app/models/card';
 
 @Injectable({
   providedIn: 'root',
 })
 export class GaemService {
-  private deckCards: string[];
+  private deckCards: Card[];
 
   constructor() {
     // TODO: initialize this deck with real stuff and not scam strings
-    this.deckCards = ["tako_1", "tako_2", "tako_3", "tako_4", "tako_5", "tako_6", "tako_7", "tako_8"];
+    const someCardMeta: CardMeta = {
+      imgUrl: '/assets/images/card-example.svg',
+      damage: 100,
+      maxHealth: 500,
+    };
+    this.deckCards = [
+      new Card(someCardMeta),
+      new Card(someCardMeta),
+      new Card(someCardMeta),
+      new Card(someCardMeta),
+      new Card(someCardMeta),
+      new Card(someCardMeta),
+      new Card(someCardMeta),
+      new Card(someCardMeta),
+    ];
   }
 
-  serveHand(req: number) {
-    let hand: string[] = Array();
+  serveHand(req: number): Card[] {
+    let hand: Card[] = Array();
     if (req > this.deckCards.length) {
       hand.push(...this.deckCards);
       this.deckCards = Array(); // empty the entire array
     } else {
       while (hand.length != req) {
-        let card: string = this.deckCards[Math.floor(Math.random() * this.deckCards.length) | 0];
+        let card: Card =
+          this.deckCards[Math.floor(Math.random() * this.deckCards.length) | 0];
         if (!hand.includes(card)) {
           hand.push(card);
         }
       }
-      this.deckCards = this.deckCards.filter(card => !hand.includes(card)); // remove the cards added to the deck
+      this.deckCards = this.deckCards.filter((card) => !hand.includes(card)); // remove the cards added to the deck
     }
     return hand;
   }
