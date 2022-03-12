@@ -8,18 +8,55 @@ import {
 import { Component, OnInit } from '@angular/core';
 import { GaemService } from 'src/app/services/gaem/gaem.service';
 import { Card } from 'src/app/models/card';
+import {
+  animate,
+  state,
+  style,
+  transition,
+  trigger,
+} from '@angular/animations';
 
 @Component({
   selector: 'app-gaem',
   templateUrl: './gaem.component.html',
   styleUrls: ['./gaem.component.css'],
+  animations: [
+    trigger('addedRemoved', [
+      state(
+        'added',
+        style({
+          opacity: '100%',
+          position: 'relative',
+          top: '0rem',
+        })
+      ),
+      state(
+        'removed',
+        style({ opacity: '0%', position: 'relative', top: '3rem' })
+      ),
+      // NOTE: do not change these without also changing the timeouts
+      transition('added => removed', [animate('1s')]),
+      transition('removed => added', [animate('0.5s')]),
+    ]),
+  ],
 })
 export class GaemComponent implements OnInit {
   public deckCards: Card[];
   public fightingZones: Card[][] = [[], []];
 
   constructor(private service: GaemService) {
-    this.deckCards = service.serveHand(4);
+    this.deckCards = [];
+    this.addToDeck(service.serveHand(4));
+  }
+
+  addToDeck(newCards: Card[]) {
+    this.deckCards = this.deckCards.concat(newCards);
+
+    setTimeout(() => {
+      this.deckCards.forEach((card) => {
+        card.added = true;
+      });
+    }, 500);
   }
 
   ngOnInit(): void {}
@@ -66,7 +103,9 @@ export class GaemComponent implements OnInit {
   }
 
   numCardsInFightingZones(): number {
-    return this.fightingZones.filter((zone) => zone.length > 0).length;
+    return this.fightingZones
+      .filter((zone) => zone.length > 0)
+      .filter((zone) => zone[0].isAlive() && zone[0].added).length;
   }
 
   availableSpaceInDeck(): number {
@@ -110,13 +149,18 @@ export class GaemComponent implements OnInit {
       }
     });
 
-    this.deckCards = this.deckCards.concat(
-      this.service.serveHand(this.availableSpaceInDeck())
-    );
+    this.addToDeck(this.service.serveHand(this.availableSpaceInDeck()));
   }
 
   cardDied(zoneIndex: number) {
     console.log(`Killing card with index ${zoneIndex}`);
-    this.fightingZones[zoneIndex].shift();
+    const removedCard = this.fightingZones[zoneIndex][0];
+    if (removedCard !== undefined) {
+      removedCard.added = false;
+    }
+
+    setTimeout(() => {
+      this.fightingZones[zoneIndex].shift();
+    }, 1000);
   }
 }

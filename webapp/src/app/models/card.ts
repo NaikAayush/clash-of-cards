@@ -6,9 +6,12 @@ export interface CardMeta {
 
 export class Card {
   public health: number;
+  // for animation in UI
+  public added: boolean;
 
   constructor(public meta: CardMeta) {
     this.health = meta.maxHealth;
+    this.added = false;
   }
 
   public takeDamage(damage: number): boolean {

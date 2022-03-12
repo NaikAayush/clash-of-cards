@@ -37,8 +37,14 @@
             cdkDrag
             cdkDragBoundary=".game-board"
             *ngFor="let card of fightingZones[0]"
+            [@addedRemoved]="card.added ? 'added' : 'removed'"
           >
             <img class="card-size" src="{{ card.meta.imgUrl }}" />
+            <img
+              class="card-size"
+              src="assets/images/card-background.svg"
+              *cdkDragPlaceholder
+            />
             <div class="w-32 bg-white h-1 relative top-1">
               <div
                 class="h-1 bg-green-400"
@@ -61,8 +67,14 @@
             cdkDrag
             cdkDragBoundary=".game-board"
             *ngFor="let card of fightingZones[1]"
+            [@addedRemoved]="card.added ? 'added' : 'removed'"
           >
             <img class="card-size" src="{{ card.meta.imgUrl }}" />
+            <img
+              class="card-size"
+              src="assets/images/card-background.svg"
+              *cdkDragPlaceholder
+            />
             <div class="w-32 bg-white h-1 relative top-1">
               <div
                 class="h-1 bg-green-400"
@@ -87,8 +99,14 @@
         cdkDrag
         cdkDragBoundary=".game-board"
         *ngFor="let card of deckCards"
+        [@addedRemoved]="card.added ? 'added' : 'removed'"
       >
         <img class="card-size" src="{{ card.meta.imgUrl }}" />
+        <img
+          class="card-size"
+          src="assets/images/card-background.svg"
+          *cdkDragPlaceholder
+        />
         <div class="w-32 bg-white h-1 relative top-1">
           <div
             class="h-1 bg-green-400"
