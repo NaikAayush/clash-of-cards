@@ -1,43 +1,5 @@
-.game-board {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  grid-template-rows: repeat(6, 1fr);
-  grid-column-gap: 0px;
-  grid-row-gap: 0px;
-}
-
-.player-deck {
-  grid-area: 2 / 1 / 6 / 2;
-}
-
-.fight-area {
-  grid-area: 2 / 3 / 6 / 6;
-
-  /* display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  grid-template-rows: repeat(5, 1fr);
-  grid-column-gap: 0px;
-  grid-row-gap: 0px; */
-}
-
-.enemy-slot-1 {
-  grid-area: 2 / 4 / 3 / 5;
-}
-
-.enemy-slot-2 {
-  grid-area: 4 / 4 / 5 / 5;
-}
-
-.player-slot-2 {
-  grid-area: 4 / 2 / 5 / 3;
-}
-
-.player-slot-1 {
-  grid-area: 2 / 2 / 3 / 3;
-}
-
-.enemy-deck {
-  grid-area: 2 / 7 / 6 / 8;
+.card-size {
+  height: 12rem;
 }
 
 .card {
@@ -46,7 +8,6 @@
 
 .cdk-drag-preview {
   box-sizing: border-box;
-  /* border-radius: 4px; */
   box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
     0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);
 }
@@ -61,6 +22,16 @@
 
 .player-deck.cdk-drop-list-dragging .card:not(.cdk-drag-placeholder) {
   transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.player-deck.cdk-drop-list-receiving {
+  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+    0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);
+}
+
+.fighting-list.cdk-drop-list-receiving {
+  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+    0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);
 }
 
 .fighting-list.cdk-drop-list-dragging .card:not(.cdk-drag-placeholder) {
