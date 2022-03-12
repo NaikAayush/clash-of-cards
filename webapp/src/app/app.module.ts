@@ -6,15 +6,9 @@ import { AppComponent } from './app.component';
 import { GaemComponent } from './components/gaem/gaem.component';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    GaemComponent
-  ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule
-  ],
+  declarations: [AppComponent, GaemComponent],
+  imports: [BrowserModule, AppRoutingModule],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

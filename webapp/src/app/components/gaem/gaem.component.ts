@@ -4,13 +4,10 @@ import { GaemService } from 'src/app/services/gaem/gaem.service';
 @Component({
   selector: 'app-gaem',
   templateUrl: './gaem.component.html',
-  styleUrls: ['./gaem.component.css']
+  styleUrls: ['./gaem.component.css'],
 })
 export class GaemComponent implements OnInit {
+  constructor(service: GaemService) {}
 
-  constructor(service: GaemService) { }
-
-  ngOnInit(): void {
-  }
-
+  ngOnInit(): void {}
 }
