@@ -6,8 +6,6 @@ import {
   existsSync,
   mkdirSync,
   createReadStream,
-  opendirSync,
-  appendFileSync,
 } from "fs";
 import { pinFileToIPFS } from "./pinata";
 const sharp = require("sharp");
@@ -28,7 +26,7 @@ const ipfsHashes: Array<string> = [];
 
 const takenNames: Record<string, string> = {};
 const takenFaces: Record<string, string> = {};
-let idx = 10;
+let idx = 100;
 
 function randInt(max: number) {
   return Math.floor(Math.random() * (max + 1));
@@ -210,7 +208,10 @@ if (!existsSync("./out")) {
 // Cleanup dir before each run
 readdirSync("./out").forEach((f) => rmSync(`./out/${f}`));
 
-do {
-  createImage(idx);
-  idx--;
-} while (idx >= 0);
+async function main() {
+  do {
+    await createImage(idx);
+    idx--;
+  } while (idx >= 0);
+}
+main();
