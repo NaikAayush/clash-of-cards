@@ -177,7 +177,7 @@ async function createImage(idx: number) {
 
     writeFileSync(`./out/${idx}.svg`, final);
     writeFileSync(`./out/${idx}.json`, JSON.stringify(meta));
-    // svgToPng(idx);
+    await svgToPng(idx);
     const metadata = {
       name: adj + "-" + name,
       keyvalues: {
@@ -187,7 +187,7 @@ async function createImage(idx: number) {
       },
     };
     const res = await pinFileToIPFS(
-      createReadStream(`./out/${idx}.svg`),
+      createReadStream(`./out/${idx}.png`),
       metadata
     );
     if (existsSync("data.json")) {
