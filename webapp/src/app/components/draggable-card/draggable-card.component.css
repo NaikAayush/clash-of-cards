@@ -1,0 +1,23 @@
+.card-size {
+}
+
+.card-full-size {
+  height: 15rem;
+  max-width: none;
+}
+
+.empty-card {
+  height: 15rem;
+  width: 10rem;
+  background-image: url("/assets/images/card-blank.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.card:not(.cdk-drag-preview, .cdk-drag-placeholder) {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.card.cdk-drag-preview {
+  transition: transform 100ms cubic-bezier(0, 0, 0.2, 1);
+}

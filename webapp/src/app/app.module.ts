@@ -6,9 +6,10 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { GaemComponent } from './components/gaem/gaem.component';
 import { DragDropModule } from '@angular/cdk/drag-drop';
+import { DraggableCardComponent } from './components/draggable-card/draggable-card.component';
 
 @NgModule({
-  declarations: [AppComponent, GaemComponent],
+  declarations: [AppComponent, GaemComponent, DraggableCardComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,

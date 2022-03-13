@@ -1,0 +1,22 @@
+<ng-template #template>
+  <div
+    class="card card-size bg-gray-300 rounded-xl text-center cursor-pointer"
+    cdkDrag
+    cdkDragBoundary=".game-board"
+    [@addedRemoved]="card.added ? 'added' : 'removed'"
+    *ngIf="card"
+  >
+    <img class="card-size card-full-size" src="{{ card.meta.imgUrl }}" />
+    <img
+      class="card-size card-full-size"
+      src="assets/images/card-blank.svg"
+      *cdkDragPlaceholder
+    />
+    <div *ngIf="showHealth" class="w-32 bg-white h-1 relative top-1">
+      <div
+        class="h-1 bg-green-400"
+        style.width.%="{{ (card.health * 100) / card.meta.maxHealth }}"
+      ></div>
+    </div>
+  </div>
+</ng-template>

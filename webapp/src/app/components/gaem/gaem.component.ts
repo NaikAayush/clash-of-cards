@@ -99,6 +99,10 @@ export class GaemComponent implements OnInit {
     return drop.data.length === 0;
   }
 
+  canBeDroppedToDeck(drag: CdkDrag, drop: CdkDropList) {
+    return true;
+  }
+
   hasEmptyFightingZones(): boolean {
     const numFightingZones = this.fightingZones.length;
     const filledFightingZones = this.numCardsInFightingZones();
