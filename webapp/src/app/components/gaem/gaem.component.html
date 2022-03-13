@@ -80,29 +80,18 @@
           [cdkDropListEnterPredicate]="canBeDroppedToFight"
           #fightingZone1="cdkDropList"
         >
-          <div
-            class="card card-size bg-gray-300 rounded-xl text-center cursor-pointer"
-            cdkDrag
-            cdkDragBoundary=".game-board"
-            *ngFor="let card of fightingZones[0]"
-            [@addedRemoved]="card.added ? 'added' : 'removed'"
-          >
-            <img
-              class="card-size card-full-size"
-              src="{{ card.meta.imgUrl }}"
-            />
-            <img
-              class="card-size card-full-size"
-              src="assets/images/card-blank.svg"
-              *cdkDragPlaceholder
-            />
-            <div class="w-32 bg-white h-1 relative top-1">
-              <div
-                class="h-1 bg-green-400"
-                style.width.%="{{ (card.health * 100) / card.meta.maxHealth }}"
-              ></div>
-            </div>
-          </div>
+          <ng-container class="card" *ngFor="let card of fightingZones[0]">
+            <app-draggable-card
+              [card]="card"
+              [showHealth]="true"
+              #wrapper
+            ></app-draggable-card>
+            <ng-container
+              *ngTemplateOutlet="
+                wrapper.template === undefined ? null : wrapper.template
+              "
+            ></ng-container>
+          </ng-container>
         </div>
         <div
           class="fighting-list empty-card card-size transition-shadow duration-300 flex flex-row justify-between card-size self-center rounded-xl bg-gray-100"
@@ -113,29 +102,18 @@
           [cdkDropListEnterPredicate]="canBeDroppedToFight"
           #fightingZone2="cdkDropList"
         >
-          <div
-            class="card card-size bg-gray-300 rounded-xl text-center cursor-pointer"
-            cdkDrag
-            cdkDragBoundary=".game-board"
-            *ngFor="let card of fightingZones[1]"
-            [@addedRemoved]="card.added ? 'added' : 'removed'"
-          >
-            <img
-              class="card-size card-full-size"
-              src="{{ card.meta.imgUrl }}"
-            />
-            <img
-              class="card-size card-full-size"
-              src="assets/images/card-blank.svg"
-              *cdkDragPlaceholder
-            />
-            <div class="w-32 bg-white h-1 relative top-1">
-              <div
-                class="h-1 bg-green-400"
-                style.width.%="{{ (card.health * 100) / card.meta.maxHealth }}"
-              ></div>
-            </div>
-          </div>
+          <ng-container *ngFor="let card of fightingZones[1]">
+            <app-draggable-card
+              [card]="card"
+              [showHealth]="true"
+              #wrapper
+            ></app-draggable-card>
+            <ng-container
+              *ngTemplateOutlet="
+                wrapper.template === undefined ? null : wrapper.template
+              "
+            ></ng-container>
+          </ng-container>
         </div>
       </div>
     </div>
@@ -147,30 +125,24 @@
         cdkDropListOrientation="horizontal"
         (cdkDropListDropped)="dropCard($event)"
         [cdkDropListConnectedTo]="[fightingZone1, fightingZone2]"
+        [cdkDropListEnterPredicate]="canBeDroppedToDeck"
         [cdkDropListData]="deckCards"
         #deckList="cdkDropList"
       >
         <div class="card-full-size"></div>
-        <div
-          class="card card-size bg-gray-300 rounded-xl text-center cursor-pointer"
-          cdkDrag
-          cdkDragBoundary=".game-board"
-          *ngFor="let card of deckCards"
-          [@addedRemoved]="card.added ? 'added' : 'removed'"
-        >
-          <img class="card-size card-full-size" src="{{ card.meta.imgUrl }}" />
-          <img
-            class="card-size card-full-size"
-            src="assets/images/card-blank.svg"
-            *cdkDragPlaceholder
-          />
-          <div class="w-32 bg-white h-1 relative top-1">
-            <div
-              class="h-1 bg-green-400"
-              style.width.%="{{ (card.health * 100) / card.meta.maxHealth }}"
-            ></div>
-          </div>
-        </div>
+        <ng-container class="card" *ngFor="let card of deckCards">
+          <app-draggable-card
+            class="card"
+            [card]="card"
+            [showHealth]="true"
+            #wrapper
+          ></app-draggable-card>
+          <ng-container
+            *ngTemplateOutlet="
+              wrapper.template === undefined ? null : wrapper.template
+            "
+          ></ng-container>
+        </ng-container>
       </div>
       <div class="self-end w-1/12 m-8">
         <img src="assets/images/logo-text.svg" />

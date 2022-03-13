@@ -18,6 +18,10 @@
   /* box-sizing: border-box; */
 }
 
+.cdk-drop-dragging .cdk-drag {
+  transition: transform 500ms cubic-bezier(0, 0, 0.2, 1);
+}
+
 .cdk-drag-preview {
   /* box-sizing: border-box; */
   box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
@@ -36,8 +40,8 @@
   /* min-height: 12rem; */
 }
 
-.player-deck.cdk-drop-list-dragging .card:not(.cdk-drag-placeholder) {
-  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+.player-deck.cdk-drop-list-dragging .card {
+  /* transition: transform 250ms cubic-bezier(0, 0, 0.2, 1); */
 }
 
 .player-deck.cdk-drop-list-receiving {
@@ -50,8 +54,8 @@
     0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);
 }
 
-.fighting-list.cdk-drop-list-dragging .card:not(.cdk-drag-placeholder) {
-  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+.fighting-list.cdk-drop-list-dragging .card {
+  /* transition: transform 250ms cubic-bezier(0, 0, 0.2, 1); */
 }
 
 .start-button {
