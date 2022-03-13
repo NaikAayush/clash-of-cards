@@ -12,5 +12,8 @@
   "dependencies": {
     "scale-that-svg": "^1.0.5",
     "sharp": "^0.29.3"
+  },
+  "devDependencies": {
+    "@types/sharp": "^0.30.0"
   }
 }

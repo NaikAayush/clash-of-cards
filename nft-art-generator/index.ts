@@ -1,4 +1,4 @@
-const {
+import {
   readFile,
   readFileSync,
   writeFileSync,
@@ -6,7 +6,7 @@ const {
   rmSync,
   existsSync,
   mkdirSync,
-} = require("fs");
+} from "fs";
 const sharp = require("sharp");
 const { scale } = require("scale-that-svg");
 
@@ -21,15 +21,15 @@ const template = `
     </svg>
 `;
 
-const takenNames = {};
-const takenFaces = {};
+const takenNames: Record<string, string> = {};
+const takenFaces: Record<string, string> = {};
 let idx = 10;
 
-function randInt(max) {
+function randInt(max: number) {
   return Math.floor(Math.random() * (max + 1));
 }
 
-function randElement(arr) {
+function randElement(arr: Array<string>) {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
@@ -38,13 +38,13 @@ function getRandomColor() {
   return randElement(colors);
 }
 
-function getRandomInt(min, max) {
+function getRandomInt(min: number, max: number) {
   min = Math.ceil(min);
   max = Math.floor(max);
   return Math.floor(Math.random() * (max - min) + min);
 }
 
-function getRandomName() {
+function getRandomName(): string {
   const adjectives =
     "fired trashy tubular nasty jacked swol buff ferocious firey flamin agnostic artificial bloody crazy cringey crusty dirty eccentric glutinous harry juicy simple stylish awesome creepy corny freaky shady sketchy lame sloppy hot intrepid juxtaposed killer ludicrous mangy pastey ragin rusty rockin sinful shameful stupid sterile ugly vascular wild young old zealous flamboyant super sly shifty trippy fried injured depressed anxious clinical".split(
       " "
@@ -66,7 +66,7 @@ function getRandomName() {
   }
 }
 
-async function getLayer(name, skip = 0.0) {
+async function getLayer(name: string, skip = 0.0) {
   //   const svg = readFileSync(`./layers/${name}.svg`, "utf-8");
   let svg = await scaleSVG(`./layers/${name}.svg`);
   if (name.includes("bg")) {
@@ -77,7 +77,7 @@ async function getLayer(name, skip = 0.0) {
   return Math.random() > skip ? layer : "";
 }
 
-function getHealth(rarity) {
+function getHealth(rarity: number) {
   if (rarity == 0) {
     return getRandomInt(50, 100);
   }
@@ -88,7 +88,7 @@ function getHealth(rarity) {
     return getRandomInt(300, 350);
   }
 }
-function getDamage(rarity) {
+function getDamage(rarity: number) {
   if (rarity == 0) {
     return getRandomInt(20, 30);
   }
@@ -100,11 +100,11 @@ function getDamage(rarity) {
   }
 }
 
-async function scaleSVG(src) {
+async function scaleSVG(src: string) {
   return await scale(readFileSync(src), { scale: 4 });
 }
 
-async function svgToPng(name) {
+async function svgToPng(name: number) {
   const src = `./out/${name}.svg`;
   const dest = `./out/${name}.png`;
 
@@ -113,13 +113,11 @@ async function svgToPng(name) {
   await resized.toFile(dest);
 }
 
-function capitalizeFirstLetter(string) {
+function capitalizeFirstLetter(string: string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-async function createImage(idx) {
-  x = await scale(readFileSync("./layers/bg0.svg"), { scale: 4 });
-  writeFileSync("x.svg", x);
+async function createImage(idx: number) {
   const bg = randInt(9);
   const frame = randInt(2);
   const head = randInt(5);
@@ -136,14 +134,14 @@ async function createImage(idx) {
 
   const face = [frame, head, face_].join("");
 
-  if (face[takenFaces]) {
-    createImage();
+  if (false) {
+    createImage(idx);
   } else {
     const fullName = getRandomName();
     const adj = fullName.split("-")[0];
     const name = fullName.split("-")[1];
 
-    face[takenFaces] = face;
+    // face[takenFaces] = face;
 
     const headData = await getLayer(`head${head}`);
     let data = await getLayer("data1");
@@ -174,7 +172,6 @@ async function createImage(idx) {
     writeFileSync(`./out/${idx}.json`, JSON.stringify(meta));
     writeFileSync(`./out/${idx}.svg`, final);
     svgToPng(idx);
-    console.log(takenFaces);
   }
 }
 
