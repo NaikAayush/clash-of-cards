@@ -7,20 +7,33 @@
     <div class="box w-full overflow-y-scroll">
       <div
         class="relative flex flex-row flex-wrap gap-8 p-8 items-center justify-center"
+        cdkDropListGroup
       >
-        <app-card-item></app-card-item>
-        <app-card-item></app-card-item>
-        <app-card-item></app-card-item>
-        <app-card-item></app-card-item>
-        <app-card-item></app-card-item>
-        <app-card-item></app-card-item>
-        <app-card-item></app-card-item>
-        <app-card-item></app-card-item>
-        <app-card-item></app-card-item>
-        <app-card-item></app-card-item>
-        <app-card-item></app-card-item>
-        <app-card-item></app-card-item>
-        <app-card-item></app-card-item>
+        <div
+          class="transition-shadow min-h-[15rem] min-w-[10rem] duration-300 self-center rounded-xl bg-gray-100"
+          cdkDropList
+          (cdkDropListDropped)="dropCard($event)"
+          cdkDropListOrientation="horizontal"
+          [cdkDropListData]="cards"
+          [cdkDropListEnterPredicate]="canBeDropped"
+          [cdkDropListConnectedTo]="selectedZoneIds"
+          *ngFor="let cards of collectionDropList; let i = index"
+          [id]="'collection-zone-' + i"
+        >
+          <ng-container class="card" *ngFor="let card of cards">
+            <app-draggable-card
+              class="card"
+              [card]="card"
+              [showHealth]="false"
+              #wrapper
+            ></app-draggable-card>
+            <ng-container
+              *ngTemplateOutlet="
+                wrapper.template === undefined ? null : wrapper.template
+              "
+            ></ng-container>
+          </ng-container>
+        </div>
       </div>
       <div
         class="grid sticky bottom-0 bg-gradient-to-t from-[#F2F0EA] h-20 justify-items-end pr-28 items-center"
@@ -37,18 +50,36 @@
     <div class="text-2xl font-semibold">Choose 8 cards for a face off</div>
     <div
       class="flex flex-row flex-wrap p-8 gap-8 mx-24 justify-center items-center"
+      cdkDropListGroup
     >
-      <app-card-item></app-card-item>
-      <app-card-item></app-card-item>
-      <app-card-item></app-card-item>
-      <app-card-item></app-card-item>
-      <app-card-item></app-card-item>
-      <app-card-item></app-card-item>
-      <app-card-item></app-card-item>
-      <app-card-item></app-card-item>
+      <div
+        class="transition-shadow min-h-[15rem] min-w-[10rem] duration-300 self-center rounded-xl bg-gray-100"
+        cdkDropList
+        (cdkDropListDropped)="dropCard($event)"
+        cdkDropListOrientation="horizontal"
+        [cdkDropListData]="selectedCardList[i]"
+        [cdkDropListEnterPredicate]="canBeDropped"
+        [cdkDropListConnectedTo]="collectionZoneIds"
+        *ngFor="let cards of selectedCardList; let i = index"
+        [id]="'selected-zone-' + i"
+      >
+        <ng-container *ngFor="let card of cards" class="card">
+          <app-draggable-card
+            class="card"
+            [card]="card"
+            [showHealth]="false"
+            #wrapper
+          ></app-draggable-card>
+          <ng-container
+            *ngTemplateOutlet="
+              wrapper.template === undefined ? null : wrapper.template
+            "
+          ></ng-container>
+        </ng-container>
+      </div>
     </div>
     <button
-      class="btn-1 w-48 h-12 font-bold text-lg text-white bg-[#ed2e82] hover:bg-[#e9126f]"
+      class="btn-1 w-48 h-12 font-bold text-lg text-white bg-[#ed2e82] hover:bg-[#be2568]"
     >
       Go for Battle
     </button>
