@@ -12,7 +12,7 @@ export class GaemService {
     // TODO: initialize this deck with real stuff and not scam strings
     const someCardMeta: CardMeta = {
       imgUrl: '/assets/images/card-example.svg',
-      damage: 100,
+      damage: 200,
       maxHealth: 500,
     };
     this.deckCards = [

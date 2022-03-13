@@ -7,7 +7,7 @@ import {
 } from '@angular/cdk/drag-drop';
 import { Component, OnInit } from '@angular/core';
 import { GaemService } from 'src/app/services/gaem/gaem.service';
-import { Card } from 'src/app/models/card';
+import { Card, CardMeta } from 'src/app/models/card';
 import {
   animate,
   state,
@@ -17,6 +17,7 @@ import {
 } from '@angular/animations';
 import { Subscription, timer } from 'rxjs';
 import { Router } from '@angular/router';
+import { ScoreService } from 'src/app/services/score/score.service';
 
 @Component({
   selector: 'app-gaem',
@@ -52,14 +53,40 @@ export class GaemComponent implements OnInit {
   public coinsEarned: number = 100;
   public waitingForResp = false;
 
+  public enemyCards: Card[] = [];
+  public enemyFightingZones: Card[][] = [[], []];
+
   private subscription?: Subscription;
   showWinModal = false;
   showLoseModal = false;
 
-  constructor(private service: GaemService, private router: Router) {
+  constructor(
+    private service: GaemService,
+    private router: Router,
+    private scorer: ScoreService
+  ) {
     this.service.onReset(() => {
       this.reset();
     });
+
+    const someCardMeta: CardMeta = {
+      imgUrl: '/assets/images/card-example.svg',
+      damage: 100,
+      maxHealth: 500,
+    };
+    this.enemyCards = [
+      new Card(someCardMeta),
+      new Card(someCardMeta),
+      new Card(someCardMeta),
+      new Card(someCardMeta),
+      new Card(someCardMeta),
+      new Card(someCardMeta),
+      new Card(someCardMeta),
+      new Card(someCardMeta),
+    ];
+    for (let i = 0; i < this.enemyCards.length; ++i) {
+      this.enemyCards[i].takeDamage((i + 1) * 60);
+    }
   }
 
   reset() {
@@ -76,10 +103,14 @@ export class GaemComponent implements OnInit {
     this.showWinModal = false;
   }
 
-  resetTimer() {
+  stopTimer() {
     if (this.subscription !== undefined) {
       this.subscription.unsubscribe();
     }
+  }
+
+  resetTimer() {
+    this.stopTimer();
 
     this.timer = timer(1000, 1000);
     this.secondsElapsed = 30;
@@ -88,6 +119,8 @@ export class GaemComponent implements OnInit {
 
       if (this.secondsElapsed <= 0) {
         this.secondsElapsed = 0;
+
+        this.showLoseModal = true;
       }
     });
   }
@@ -161,6 +194,33 @@ export class GaemComponent implements OnInit {
     return 4 - this.deckCards.length;
   }
 
+  addEnemyCards() {
+    for (let fightingZone of this.enemyFightingZones) {
+      if (fightingZone.length == 0) {
+        const newCard = this.enemyCards.shift();
+        if (newCard !== undefined) {
+          fightingZone.push(newCard);
+
+          console.log('Added enemy card', newCard);
+
+          setTimeout(() => {
+            newCard.added = true;
+          }, 500);
+        }
+      }
+    }
+  }
+
+  checkPlayerWin() {
+    if (
+      this.enemyCards.length == 0 &&
+      this.enemyFightingZones.filter((zone) => zone.length > 0).length == 0
+    ) {
+      console.log('Win!');
+      this.showWinModal = true;
+    }
+  }
+
   continue() {
     if (this.waitingForResp) {
       return;
@@ -185,36 +245,57 @@ export class GaemComponent implements OnInit {
 
     if (toContinue) {
       this.waitingForResp = true;
+      this.stopTimer();
       this.roundTimes.push(this.secondsElapsed);
 
       setTimeout(() => {
-        this.roundNum += 1;
         this.waitingForResp = false;
 
         // TODO: remove this sim
-        this.roundCompleted([40, 70]);
+        this.addEnemyCards();
 
-        this.resetTimer();
+        setTimeout(() => {
+          const enemyDamages = this.enemyFightingZones.map(
+            (zone) => zone[0]?.meta.damage
+          );
+          this.takeDamages(this.fightingZones, enemyDamages);
+          const playerDamages = this.fightingZones.map(
+            (zone) => zone[0]?.meta.damage
+          );
+          this.takeDamages(this.enemyFightingZones, playerDamages);
+          this.roundCompleted();
 
-        if (this.noCardsLeft()) {
-          this.showLoseModal = true;
-        }
+          this.resetTimer();
+          this.roundNum += 1;
+
+          if (this.noCardsLeft()) {
+            this.showLoseModal = true;
+          }
+        }, 700);
       }, 2000);
     }
   }
 
-  roundCompleted(damages: number[]) {
-    this.fightingZones.forEach((cards, index) => {
+  takeDamages(zones: Card[][], damages: number[]) {
+    zones.forEach((cards, index) => {
       if (cards.length > 0) {
         const damage = damages.shift();
         if (damage !== undefined) {
           const alive = cards[0].takeDamage(damage);
           if (!alive) {
-            this.cardDied(index);
+            this.cardDied(zones, index);
           }
         }
       }
     });
+  }
+
+  roundCompleted() {
+    this.coinsEarned = this.scorer.getScore(
+      this.deckCards.concat(this.fightingZones.map((zone) => zone[0])),
+      this.roundTimes
+    );
+    this.checkPlayerWin();
 
     this.addToDeck(
       this.service.serveHand(
@@ -229,15 +310,15 @@ export class GaemComponent implements OnInit {
     );
   }
 
-  cardDied(zoneIndex: number) {
+  cardDied(zones: Card[][], zoneIndex: number) {
     console.log(`Killing card with index ${zoneIndex}`);
-    const removedCard = this.fightingZones[zoneIndex][0];
+    const removedCard = zones[zoneIndex][0];
     if (removedCard !== undefined) {
       removedCard.added = false;
     }
 
     setTimeout(() => {
-      this.fightingZones[zoneIndex].shift();
+      zones[zoneIndex].shift();
     }, 1000);
   }
 
