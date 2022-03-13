@@ -24,7 +24,7 @@
     <div
       class="fight-area rounded-xl bg-[#E1DFDA] border-4 border-black flex flex-row w-full max-w-5xl self-center justify-center h-1/2"
     >
-      <div class="flex flex-row justify-between mx-16 my-2 grow">
+      <div class="flex flex-row justify-between ml-16 mr-8 my-2 grow">
         <div class="bg-gray-300 justify-center self-center rounded-xl">
           <img
             class="card-size empty-card"
@@ -47,7 +47,7 @@
         </button>
       </div>
       <div
-        class="flex flex-row justify-between mx-16 my-2 grow"
+        class="flex flex-row justify-between mr-16 ml-8 my-2 grow"
         cdkDropListGroup
       >
         <div
@@ -119,35 +119,41 @@
         </div>
       </div>
     </div>
-    <div
-      class="player-deck duration-300 rounded-xl flex flex-row gap-8 justify-center h-auto p-8"
-      cdkDropList
-      cdkDropListOrientation="horizontal"
-      (cdkDropListDropped)="dropCard($event)"
-      [cdkDropListConnectedTo]="[fightingZone1, fightingZone2]"
-      [cdkDropListData]="deckCards"
-      #deckList="cdkDropList"
-    >
-      <div class="card-full-size"></div>
+    <div class="flex flex-row justify-between">
+      <div class="w-1/12"></div>
       <div
-        class="card card-size bg-gray-300 rounded-xl text-center cursor-pointer"
-        cdkDrag
-        cdkDragBoundary=".game-board"
-        *ngFor="let card of deckCards"
-        [@addedRemoved]="card.added ? 'added' : 'removed'"
+        class="player-deck w-10/12 duration-300 rounded-xl flex flex-row gap-8 justify-center h-auto p-8"
+        cdkDropList
+        cdkDropListOrientation="horizontal"
+        (cdkDropListDropped)="dropCard($event)"
+        [cdkDropListConnectedTo]="[fightingZone1, fightingZone2]"
+        [cdkDropListData]="deckCards"
+        #deckList="cdkDropList"
       >
-        <img class="card-size card-full-size" src="{{ card.meta.imgUrl }}" />
-        <img
-          class="card-size card-full-size"
-          src="assets/images/card-blank.svg"
-          *cdkDragPlaceholder
-        />
-        <div class="w-32 bg-white h-1 relative top-1">
-          <div
-            class="h-1 bg-green-400"
-            style.width.%="{{ (card.health * 100) / card.meta.maxHealth }}"
-          ></div>
+        <div class="card-full-size"></div>
+        <div
+          class="card card-size bg-gray-300 rounded-xl text-center cursor-pointer"
+          cdkDrag
+          cdkDragBoundary=".game-board"
+          *ngFor="let card of deckCards"
+          [@addedRemoved]="card.added ? 'added' : 'removed'"
+        >
+          <img class="card-size card-full-size" src="{{ card.meta.imgUrl }}" />
+          <img
+            class="card-size card-full-size"
+            src="assets/images/card-blank.svg"
+            *cdkDragPlaceholder
+          />
+          <div class="w-32 bg-white h-1 relative top-1">
+            <div
+              class="h-1 bg-green-400"
+              style.width.%="{{ (card.health * 100) / card.meta.maxHealth }}"
+            ></div>
+          </div>
         </div>
+      </div>
+      <div class="self-end w-1/12 m-8">
+        <img src="assets/images/logo-text.svg" />
       </div>
     </div>
   </div>
