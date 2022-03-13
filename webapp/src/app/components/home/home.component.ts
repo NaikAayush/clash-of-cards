@@ -5,10 +5,13 @@ import {
   moveItemInArray,
   transferArrayItem,
 } from '@angular/cdk/drag-drop';
+import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Card, CardMeta } from 'src/app/models/card';
+import { ContractService } from 'src/app/services/contract/contract.service';
 import { GaemService } from 'src/app/services/gaem/gaem.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-home',
@@ -16,31 +19,43 @@ import { GaemService } from 'src/app/services/gaem/gaem.service';
   styleUrls: ['./home.component.css'],
 })
 export class HomeComponent implements OnInit {
-  collection: Card[];
-  collectionDropList: Card[][];
-  selectedCardList: Card[][];
+  collection: Card[] = [];
+  collectionDropList?: Card[][];
+  selectedCardList: Card[][] = [];
   selectedZoneIds = Array.from(Array(10).keys()).map(
     (i) => `selected-zone-${i}`
   );
-  collectionZoneIds: string[];
+  collectionZoneIds: string[] = [];
+  balance: string = '0';
+  data: Array<string> = [];
+  dataCommon: Array<string> = [];
 
-  constructor(private gaemService: GaemService, private router: Router) {
+  constructor(
+    private gaemService: GaemService,
+    private router: Router,
+    private contractService: ContractService,
+    private http: HttpClient
+  ) {
     // TODO: remove dis
-    const someCardMeta: CardMeta = {
-      imgUrl: '/assets/images/card-example.svg',
-      damage: 100,
-      maxHealth: 500,
-    };
-    this.collection = [
-      new Card(someCardMeta),
-      new Card(someCardMeta),
-      new Card(someCardMeta),
-      new Card(someCardMeta),
-      new Card(someCardMeta),
-      new Card(someCardMeta),
-      new Card(someCardMeta),
-      new Card(someCardMeta),
-    ];
+  }
+
+  async ngOnInit() {
+    this.data = await this.contractService.getNFTs();
+    this.balance = await (
+      await this.contractService.getBalance()
+    ).split('.')[0];
+    await this.newUser();
+    console.log(this.dataCommon);
+    for (let i = 1; i < this.dataCommon.length; i++) {
+      const someCardMeta: CardMeta = {
+        imgUrl: '/assets/images/card-example.svg',
+        damage: 100,
+        maxHealth: 500,
+      };
+      someCardMeta.imgUrl =
+        'https://mygateway.mypinata.cloud/ipfs/' + this.dataCommon[i];
+      this.collection?.push(new Card(someCardMeta));
+    }
     this.collection.forEach((card) => {
       card.added = true;
     });
@@ -52,7 +67,26 @@ export class HomeComponent implements OnInit {
     this.selectedCardList = Array.from({ length: 8 }, () => []);
   }
 
-  ngOnInit(): void {}
+  async newUser() {
+    const resCommon: any = await this.getPinataCommon();
+    resCommon.rows.forEach((element: { ipfs_pin_hash: string }) => {
+      this.dataCommon.push(element.ipfs_pin_hash);
+    });
+  }
+
+  async getPinataCommon() {
+    const url =
+      'https://api.pinata.cloud/data/pinList?metadata[keyvalues][rarity]={"value":"0","op":"eq"}';
+
+    return await this.http
+      .get(url, {
+        headers: {
+          pinata_api_key: environment.pinata_api_key,
+          pinata_secret_api_key: environment.pinata_secret_api_key,
+        },
+      })
+      .toPromise();
+  }
 
   dropCard(event: CdkDragDrop<Card[]>) {
     if (event.previousContainer === event.container) {
@@ -81,7 +115,7 @@ export class HomeComponent implements OnInit {
 
   goToBattle() {
     const allSelectedFilled =
-      this.selectedCardList.filter((arr) => arr.length > 0).length == 8;
+      this.selectedCardList?.filter((arr) => arr.length > 0).length == 8;
 
     let message = "Let's go to battle!";
     let toContinue = true;
@@ -94,7 +128,7 @@ export class HomeComponent implements OnInit {
 
     if (toContinue) {
       console.log(message);
-      const selectedCards = this.selectedCardList.map((arr) => arr[0]);
+      const selectedCards = this.selectedCardList?.map((arr) => arr[0]);
       this.gaemService.setDeckCards(selectedCards);
       this.router.navigateByUrl('/gaem');
     }

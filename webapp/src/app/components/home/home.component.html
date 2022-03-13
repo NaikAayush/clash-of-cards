@@ -38,6 +38,7 @@
         class="grid sticky bottom-0 bg-gradient-to-t from-[#F2F0EA] h-20 justify-items-end pr-28 items-center"
       >
         <button
+          routerLink="market"
           class="btn w-48 h-12 font-bold text-lg bg-[#FDDD5E] hover:bg-[#fdd120]"
         >
           Marketplace
@@ -89,7 +90,7 @@
   class="flex flex-row items-center justify-center p-8 absolute top-0 right-0 gap-4"
 >
   <img class="h-14 md:h-20" src="assets/images/coin.svg" alt="" />
-  <p class="font-bold text-5xl">1000</p>
+  <p class="font-bold text-5xl">{{ balance }}</p>
 </div>
 <div
   class="flex flex-row items-center justify-center p-8 absolute bottom-0 right-0 gap-4"

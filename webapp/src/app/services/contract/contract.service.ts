@@ -46,4 +46,24 @@ export class ContractService {
     );
     await tx.wait();
   }
+
+  async getNFTs() {
+    await this.initContracts();
+    this.account = await this.ethersService.provider.send(
+      'eth_requestAccounts',
+      []
+    );
+    return await this.clashNFTContract.getAllNFTs(this.account[0]);
+  }
+
+  async getBalance() {
+    await this.initContracts();
+    this.account = await this.ethersService.provider.send(
+      'eth_requestAccounts',
+      []
+    );
+    return this.ethersService.fromWei(
+      await this.clashTokenContract.balanceOf(this.account[0])
+    );
+  }
 }
