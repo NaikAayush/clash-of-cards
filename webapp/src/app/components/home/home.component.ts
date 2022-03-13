@@ -76,4 +76,22 @@ export class HomeComponent implements OnInit {
   canBeDropped(drag: CdkDrag, drop: CdkDropList) {
     return drop.data.length === 0;
   }
+
+  goToBattle() {
+    const allSelectedFilled =
+      this.selectedCardList.filter((arr) => arr.length > 0).length == 8;
+
+    let message = "Let's go to battle!";
+    let toContinue = true;
+
+    if (!allSelectedFilled) {
+      message = 'You have empty slots in your deck!';
+      toContinue = false;
+      console.log(toContinue, message);
+    }
+
+    if (toContinue) {
+      console.log(message);
+    }
+  }
 }
