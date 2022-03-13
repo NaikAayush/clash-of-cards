@@ -149,7 +149,11 @@ export class GaemComponent implements OnInit {
       }
     });
 
-    this.addToDeck(this.service.serveHand(this.availableSpaceInDeck()));
+    this.addToDeck(
+      this.service.serveHand(
+        this.availableSpaceInDeck() - this.numCardsInFightingZones()
+      )
+    );
   }
 
   cardDied(zoneIndex: number) {

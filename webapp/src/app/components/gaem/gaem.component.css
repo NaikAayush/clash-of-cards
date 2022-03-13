@@ -41,8 +41,8 @@
 }
 
 .player-deck.cdk-drop-list-receiving {
-  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
-    0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);
+  /* box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2), */
+  /* 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12); */
 }
 
 .fighting-list.cdk-drop-list-receiving {
@@ -52,4 +52,18 @@
 
 .fighting-list.cdk-drop-list-dragging .card:not(.cdk-drag-placeholder) {
   transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.start-button {
+  font-family: "Quicksand";
+  font-weight: 700;
+
+  background: #ed2e82;
+  box-shadow: 0px 6px 0px #be2568;
+  color: #f9f9f6;
+}
+
+.start-button:hover {
+  background: #d62672;
+  box-shadow: 0px 4px 0px #a31754;
 }
