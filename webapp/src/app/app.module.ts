@@ -11,6 +11,8 @@ import { HomeComponent } from './components/home/home.component';
 import { CardItemComponent } from './components/home/card-item/card-item.component';
 import { AuthComponent } from './components/auth/auth.component';
 import { MarketplaceComponent } from './components/marketplace/marketplace.component';
+import { CardItemMarketComponent } from './components/marketplace/card-item-market/card-item-market.component';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -21,6 +23,7 @@ import { MarketplaceComponent } from './components/marketplace/marketplace.compo
     AuthComponent,
     DraggableCardComponent,
     MarketplaceComponent,
+    CardItemMarketComponent,
   ],
   imports: [
     BrowserModule,
@@ -30,6 +33,7 @@ import { MarketplaceComponent } from './components/marketplace/marketplace.compo
     BrowserModule,
     AppRoutingModule,
     DragDropModule,
+    HttpClientModule,
   ],
   providers: [],
   bootstrap: [AppComponent],
