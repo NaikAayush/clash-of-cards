@@ -7,14 +7,25 @@ import { AppComponent } from './app.component';
 import { GaemComponent } from './components/gaem/gaem.component';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { DraggableCardComponent } from './components/draggable-card/draggable-card.component';
+import { HomeComponent } from './components/home/home.component';
+import { CardItemComponent } from './components/home/card-item/card-item.component';
 
 @NgModule({
-  declarations: [AppComponent, GaemComponent, DraggableCardComponent],
+  declarations: [
+    AppComponent,
+    GaemComponent,
+    HomeComponent,
+    CardItemComponent,
+    DraggableCardComponent,
+  ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     DragDropModule,
     BrowserAnimationsModule,
+    BrowserModule,
+    AppRoutingModule,
+    DragDropModule,
   ],
   providers: [],
   bootstrap: [AppComponent],
