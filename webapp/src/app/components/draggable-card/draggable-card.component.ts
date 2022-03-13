@@ -42,6 +42,7 @@ import {
 export class DraggableCardComponent implements OnInit {
   @Input() card?: Card;
   @Input() showHealth?: boolean;
+  @Input() dragDisabled?: boolean;
 
   @ViewChild('template', { static: true }) template?: TemplateRef<any>;
 

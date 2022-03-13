@@ -4,6 +4,7 @@
     cdkDrag
     cdkDragBoundary=".game-board"
     [@addedRemoved]="card.added ? 'added' : 'removed'"
+    [cdkDragDisabled]="dragDisabled"
     *ngIf="card"
   >
     <img class="card-size card-full-size" src="{{ card.meta.imgUrl }}" />
