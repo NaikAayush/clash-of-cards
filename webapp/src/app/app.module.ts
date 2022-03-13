@@ -9,6 +9,7 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { DraggableCardComponent } from './components/draggable-card/draggable-card.component';
 import { HomeComponent } from './components/home/home.component';
 import { CardItemComponent } from './components/home/card-item/card-item.component';
+import { AuthComponent } from './components/auth/auth.component';
 
 @NgModule({
   declarations: [
@@ -16,6 +17,7 @@ import { CardItemComponent } from './components/home/card-item/card-item.compone
     GaemComponent,
     HomeComponent,
     CardItemComponent,
+    AuthComponent,
     DraggableCardComponent,
   ],
   imports: [
