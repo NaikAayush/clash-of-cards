@@ -6,7 +6,9 @@ import {
   transferArrayItem,
 } from '@angular/cdk/drag-drop';
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { Card, CardMeta } from 'src/app/models/card';
+import { GaemService } from 'src/app/services/gaem/gaem.service';
 
 @Component({
   selector: 'app-home',
@@ -22,7 +24,7 @@ export class HomeComponent implements OnInit {
   );
   collectionZoneIds: string[];
 
-  constructor() {
+  constructor(private gaemService: GaemService, private router: Router) {
     // TODO: remove dis
     const someCardMeta: CardMeta = {
       imgUrl: '/assets/images/card-example.svg',
@@ -92,6 +94,9 @@ export class HomeComponent implements OnInit {
 
     if (toContinue) {
       console.log(message);
+      const selectedCards = this.selectedCardList.map((arr) => arr[0]);
+      this.gaemService.setDeckCards(selectedCards);
+      this.router.navigateByUrl('/gaem');
     }
   }
 }

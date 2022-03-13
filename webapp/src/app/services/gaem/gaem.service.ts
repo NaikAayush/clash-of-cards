@@ -6,6 +6,7 @@ import { Card, CardMeta } from 'src/app/models/card';
 })
 export class GaemService {
   private deckCards: Card[];
+  private onResetCb?: () => void;
 
   constructor() {
     // TODO: initialize this deck with real stuff and not scam strings
@@ -26,6 +27,18 @@ export class GaemService {
     ];
     for (let i = 0; i < this.deckCards.length; ++i) {
       this.deckCards[i].takeDamage((i + 1) * 50);
+    }
+  }
+
+  public onReset(fn: () => void) {
+    this.onResetCb = fn;
+  }
+
+  public setDeckCards(newCards: Card[]) {
+    this.deckCards = newCards;
+
+    if (this.onResetCb !== undefined) {
+      this.onResetCb();
     }
   }
 

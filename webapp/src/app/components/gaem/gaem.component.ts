@@ -42,15 +42,23 @@ import { timer } from 'rxjs';
   ],
 })
 export class GaemComponent implements OnInit {
-  public deckCards: Card[];
+  public deckCards: Card[] = [];
   public fightingZones: Card[][] = [[], []];
   public roundNum: number = 1;
   public secondsElapsed: number = 90;
   public coinsEarned: number = 100;
 
   constructor(private service: GaemService) {
+    this.service.onReset(() => {
+      this.reset();
+    });
+  }
+
+  reset() {
     this.deckCards = [];
-    this.addToDeck(service.serveHand(4));
+    this.addToDeck(this.service.serveHand(4));
+    this.fightingZones = [[], []];
+    this.roundNum = 1;
   }
 
   addToDeck(newCards: Card[]) {
@@ -63,7 +71,9 @@ export class GaemComponent implements OnInit {
     }, 500);
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.reset();
+  }
 
   dropCard(event: CdkDragDrop<Card[]>, targetNumber: number = 0) {
     if (event.previousContainer === event.container) {
