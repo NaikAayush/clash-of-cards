@@ -8,15 +8,15 @@
     class="game-board w-full sm:w-3/5 self-center flex flex-auto flex-col justify-between h-full gap-8"
   >
     <div class="flex flex-row">
-      <div
-        class="w-1/5 text-white bg-[url('assets/images/corner-rect.svg')] bg-contain bg-no-repeat"
-      >
+      <div class="w-1/5 text-white">
         <div
-          class="h-[60%] mt-5 mr-5 flex flex-col justify-around items-center"
+          class="h-36 w-[12.33rem] bg-[url('assets/images/corner-rect.svg')] bg-contain bg-no-repeat"
         >
-          <div class="text-3xl">Round {{ roundNum }}</div>
-          <div class="text-4xl text-[#EC2981]">
-            {{ secondsElapsed * 1000 | date: "mm:ss":"UTC" }}
+          <div class="flex flex-col items-center justify-center pt-5">
+            <div class="text-3xl">Round {{ roundNum }}</div>
+            <div class="text-4xl text-[#EC2981]">
+              {{ secondsElapsed * 1000 | date: "mm:ss":"UTC" }}
+            </div>
           </div>
         </div>
       </div>
@@ -36,10 +36,8 @@
           <img class="card-size h-32" src="assets/images/card-back.svg" />
         </div>
       </div>
-      <div
-        class="w-1/5 h-1/3 flex flex-row items-center justify-end my-12 mx-8"
-      >
-        <img class="h-full w-auto" src="assets/images/coin.svg" />
+      <div class="w-1/5 h-36 flex flex-row items-center justify-end mr-5">
+        <img class="h-1/3 w-auto" src="assets/images/coin.svg" />
         <div class="text-[#4F3E92] text-3xl mx-4 my-8">{{ coinsEarned }}</div>
       </div>
     </div>
