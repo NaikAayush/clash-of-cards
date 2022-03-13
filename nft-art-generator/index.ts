@@ -143,7 +143,7 @@ async function createImage(idx: number) {
 
     // face[takenFaces] = face;
 
-    const headData = await getLayer(`head${head}`);
+    let headData: string = (await getLayer(`head${head}`)) as string;
     let data = await getLayer("data1");
     data = data.replace("Moshi", capitalizeFirstLetter(adj));
     data = data.replace("Moshu", capitalizeFirstLetter(name));
@@ -152,10 +152,12 @@ async function createImage(idx: number) {
     data = data.replace("75", health);
     data = data.replace("100", damage);
 
+    headData = headData.replace(/#7D72B4/g, getRandomColor());
+    headData = headData.replace(/#EC2E83/g, getRandomColor());
     const final = template
       .replace("<!-- bg -->", await getLayer(`bg${bg}`))
       .replace("<!-- frame -->", await getLayer(`frame${frame}`))
-      .replace("<!-- head -->", headData.replace("#7D72B4", getRandomColor()))
+      .replace("<!-- head -->", headData)
       .replace("<!-- face -->", await getLayer(`face${face_}`))
       .replace("<!-- data -->", await getLayer("data0"))
       .replace("<!-- data1 -->", data);

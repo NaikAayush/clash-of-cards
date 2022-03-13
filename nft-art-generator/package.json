@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "randos": "node ."
+    "build": "tsc",
+    "generate": "rimraf dist && tsc && node dist/"
   },
   "keywords": [],
   "author": "",
@@ -14,6 +15,8 @@
     "sharp": "^0.29.3"
   },
   "devDependencies": {
-    "@types/sharp": "^0.30.0"
+    "@types/sharp": "^0.30.0",
+    "rimraf": "^3.0.2",
+    "typescript": "^4.6.2"
   }
 }
