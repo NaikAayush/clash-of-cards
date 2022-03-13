@@ -6,7 +6,7 @@
   <div class="w-screen font-bold text-3xl p-4">Rare</div>
   <div class="box w-full overflow-x-scroll">
     <div class="h-72 w-full flex flex-col flex-wrap gap-4">
-      <div *ngFor="let item of data">
+      <div *ngFor="let item of dataRare">
         <app-card-item-market [cid]="item"></app-card-item-market>
       </div>
     </div>
@@ -15,7 +15,7 @@
   <div class="w-screen font-bold text-3xl p-4">Super Rare</div>
   <div class="box w-full overflow-x-scroll">
     <div class="h-72 w-full flex flex-col flex-wrap gap-4">
-      <div *ngFor="let item of data">
+      <div *ngFor="let item of dataSuperRare">
         <app-card-item-market [cid]="item"></app-card-item-market>
       </div>
     </div>

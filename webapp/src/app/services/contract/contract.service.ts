@@ -26,7 +26,7 @@ export class ContractService {
     );
   }
 
-  async buyNFT(amount: string) {
+  async buyNFT(url: string, amount: string) {
     await this.initContracts();
     this.account = await this.ethersService.provider.send(
       'eth_requestAccounts',
@@ -41,7 +41,7 @@ export class ContractService {
     await tx.wait();
     await this.clashNFTContract.payToMint(
       this.account[0],
-      'https://ttt',
+      url,
       this.ethersService.utils.parseEther(amount).toString()
     );
     await tx.wait();
