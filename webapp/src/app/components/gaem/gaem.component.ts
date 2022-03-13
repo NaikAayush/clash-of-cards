@@ -16,6 +16,7 @@ import {
   trigger,
 } from '@angular/animations';
 import { Subscription, timer } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-gaem',
@@ -50,9 +51,12 @@ export class GaemComponent implements OnInit {
   public timer = timer(1000, 1000);
   public coinsEarned: number = 100;
   public waitingForResp = false;
-  private subscription?: Subscription;
 
-  constructor(private service: GaemService) {
+  private subscription?: Subscription;
+  showWinModal = false;
+  showLoseModal = false;
+
+  constructor(private service: GaemService, private router: Router) {
     this.service.onReset(() => {
       this.reset();
     });
@@ -67,6 +71,9 @@ export class GaemComponent implements OnInit {
     this.resetTimer();
 
     this.roundTimes = [];
+
+    this.showLoseModal = false;
+    this.showWinModal = false;
   }
 
   resetTimer() {
@@ -188,6 +195,10 @@ export class GaemComponent implements OnInit {
         this.roundCompleted([40, 70]);
 
         this.resetTimer();
+
+        if (this.noCardsLeft()) {
+          this.showLoseModal = true;
+        }
       }, 2000);
     }
   }
@@ -212,6 +223,12 @@ export class GaemComponent implements OnInit {
     );
   }
 
+  noCardsLeft(): boolean {
+    return (
+      this.availableSpaceInDeck() == 4 && this.numCardsInFightingZones() == 0
+    );
+  }
+
   cardDied(zoneIndex: number) {
     console.log(`Killing card with index ${zoneIndex}`);
     const removedCard = this.fightingZones[zoneIndex][0];
@@ -222,5 +239,9 @@ export class GaemComponent implements OnInit {
     setTimeout(() => {
       this.fightingZones[zoneIndex].shift();
     }, 1000);
+  }
+
+  playAgain() {
+    this.router.navigateByUrl('/');
   }
 }
