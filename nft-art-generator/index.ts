@@ -6,6 +6,8 @@ import {
   existsSync,
   mkdirSync,
   createReadStream,
+  opendirSync,
+  appendFileSync,
 } from "fs";
 import { pinFileToIPFS } from "./pinata";
 const sharp = require("sharp");
@@ -21,6 +23,8 @@ const template = `
         <!-- data1 -->
     </svg>
 `;
+
+const ipfsHashes: Array<string> = [];
 
 const takenNames: Record<string, string> = {};
 const takenFaces: Record<string, string> = {};
@@ -163,19 +167,38 @@ async function createImage(idx: number) {
       .replace("<!-- data -->", await getLayer("data0"))
       .replace("<!-- data1 -->", data);
 
-    writeFileSync(`./out/${idx}.svg`, final);
-    const res = await pinFileToIPFS(createReadStream(`./out/${idx}.svg`));
     const meta = {
       name: adj + "-" + name,
-      image: `https://mygateway.mypinata.cloud/ipfs/${res.IpfsHash}`,
+      image: `${idx}.png`,
       attributes: {
         rarity: rarity,
         health: health,
         damage: damage,
       },
     };
+
+    writeFileSync(`./out/${idx}.svg`, final);
     writeFileSync(`./out/${idx}.json`, JSON.stringify(meta));
     // svgToPng(idx);
+    const metadata = {
+      name: adj + "-" + name,
+      keyvalues: {
+        rarity: rarity,
+        health: health,
+        damage: damage,
+      },
+    };
+    const res = await pinFileToIPFS(
+      createReadStream(`./out/${idx}.svg`),
+      metadata
+    );
+    if (existsSync("data.json")) {
+      const file = JSON.parse(readFileSync("data.json", "utf-8"));
+      file.data.push(res.IpfsHash);
+      writeFileSync("data.json", JSON.stringify(file));
+    } else {
+      writeFileSync("data.json", JSON.stringify({ data: [res.IpfsHash] }));
+    }
   }
 }
 

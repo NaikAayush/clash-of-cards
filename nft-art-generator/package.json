@@ -13,6 +13,7 @@
   "dependencies": {
     "@pinata/sdk": "^1.1.23",
     "dotenv": "^16.0.0",
+    "recursive-fs": "^2.1.0",
     "scale-that-svg": "^1.0.5",
     "sharp": "^0.29.3"
   },

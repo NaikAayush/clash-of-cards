@@ -8,15 +8,19 @@ const pinata = pinataClient(
   process.env.PINATA_SECRET_KEY as string
 );
 
-pinata
-  .testAuthentication()
-  .then((result) => {
-    console.log(result);
-  })
-  .catch((err) => {
-    console.log(err);
-  });
+async function init() {
+  await pinata
+    .testAuthentication()
+    .then((result) => {
+      console.log(result);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+}
 
-export async function pinFileToIPFS(file: ReadStream) {
-  return await pinata.pinFileToIPFS(file);
+init();
+
+export async function pinFileToIPFS(file: ReadStream, metadata: any) {
+  return await pinata.pinFileToIPFS(file, { pinataMetadata: metadata });
 }
