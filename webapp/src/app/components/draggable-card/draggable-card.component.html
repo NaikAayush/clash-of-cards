@@ -12,9 +12,9 @@
       src="assets/images/card-blank.svg"
       *cdkDragPlaceholder
     />
-    <div *ngIf="showHealth" class="w-32 bg-white h-1 relative top-1">
+    <div *ngIf="showHealth" class="w-40 bg-[#E1DFDA] h-1 relative top-1">
       <div
-        class="h-1 bg-green-400"
+        class="h-1 bg-[#4E3D93] transition-[width]"
         style.width.%="{{ (card.health * 100) / card.meta.maxHealth }}"
       ></div>
     </div>

@@ -10,6 +10,7 @@ import { DraggableCardComponent } from './components/draggable-card/draggable-ca
 import { HomeComponent } from './components/home/home.component';
 import { CardItemComponent } from './components/home/card-item/card-item.component';
 import { AuthComponent } from './components/auth/auth.component';
+import { LoaderComponent } from './components/loader/loader.component';
 import { MarketplaceComponent } from './components/marketplace/marketplace.component';
 import { CardItemMarketComponent } from './components/marketplace/card-item-market/card-item-market.component';
 import { HttpClientModule } from '@angular/common/http';
@@ -22,6 +23,7 @@ import { HttpClientModule } from '@angular/common/http';
     CardItemComponent,
     AuthComponent,
     DraggableCardComponent,
+    LoaderComponent,
     MarketplaceComponent,
     CardItemMarketComponent,
   ],
