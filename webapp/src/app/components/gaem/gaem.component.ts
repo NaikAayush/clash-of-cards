@@ -15,6 +15,7 @@ import {
   transition,
   trigger,
 } from '@angular/animations';
+import { timer } from 'rxjs';
 
 @Component({
   selector: 'app-gaem',
@@ -43,6 +44,9 @@ import {
 export class GaemComponent implements OnInit {
   public deckCards: Card[];
   public fightingZones: Card[][] = [[], []];
+  public roundNum: number = 1;
+  public secondsElapsed: number = 90;
+  public coinsEarned: number = 100;
 
   constructor(private service: GaemService) {
     this.deckCards = [];
