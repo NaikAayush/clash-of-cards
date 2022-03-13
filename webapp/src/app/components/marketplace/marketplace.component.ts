@@ -9,27 +9,45 @@ import CardData from '../../../assets/data.json';
   styleUrls: ['./marketplace.component.css'],
 })
 export class MarketplaceComponent implements OnInit {
-  data: Array<string>;
+  dataRare: Array<string> = [];
+  dataSuperRare: Array<string> = [];
   constructor(
     private contractService: ContractService,
     private http: HttpClient
-  ) {
-    this.data = CardData.data;
-  }
+  ) {}
 
   async ngOnInit() {
-    const res = await this.getPinata();
+    const resRare: any = await this.getPinataRare();
+    const resSuperRare: any = await this.getPinataSuperRare();
 
-    console.log(res);
+    resRare.rows.forEach((element: { ipfs_pin_hash: string }) => {
+      this.dataRare.push(element.ipfs_pin_hash);
+    });
+    resSuperRare.rows.forEach((element: { ipfs_pin_hash: string }) => {
+      this.dataSuperRare.push(element.ipfs_pin_hash);
+    });
   }
 
   async buy() {
-    await this.contractService.buyNFT('0.01');
+    await this.contractService.buyNFT('hp', '0.01');
   }
 
-  async getPinata() {
+  async getPinataRare() {
     const url =
-      'hhttps://api.pinata.cloud/data/pinList?metadata[keyvalues]%3D{"rarity":1}';
+      'https://api.pinata.cloud/data/pinList?metadata[keyvalues][rarity]={"value":0.5,"op":"eq"}';
+
+    return await this.http
+      .get(url, {
+        headers: {
+          pinata_api_key: environment.pinata_api_key,
+          pinata_secret_api_key: environment.pinata_secret_api_key,
+        },
+      })
+      .toPromise();
+  }
+  async getPinataSuperRare() {
+    const url =
+      'https://api.pinata.cloud/data/pinList?metadata[keyvalues][rarity]={"value":1,"op":"eq"}';
 
     return await this.http
       .get(url, {
