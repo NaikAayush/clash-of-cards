@@ -1,0 +1,23 @@
+<!-- <button (click)="buy()">BUY</button> -->
+<div
+  class="flex flex-col bg-[url('assets/images/home-bg.svg')] h-screen w-screen bg-cover items-center justify-center p-8"
+>
+  <div class="w-screen font-bold text-6xl p-4 text-[#ED2E82]">Market Place</div>
+  <div class="w-screen font-bold text-3xl p-4">Rare</div>
+  <div class="box w-full overflow-x-scroll">
+    <div class="h-72 w-full flex flex-col flex-wrap gap-4">
+      <div *ngFor="let item of data">
+        <app-card-item-market [cid]="item"></app-card-item-market>
+      </div>
+    </div>
+  </div>
+
+  <div class="w-screen font-bold text-3xl p-4">Super Rare</div>
+  <div class="box w-full overflow-x-scroll">
+    <div class="h-72 w-full flex flex-col flex-wrap gap-4">
+      <div *ngFor="let item of data">
+        <app-card-item-market [cid]="item"></app-card-item-market>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,25 @@
+/* Hide scrollbar for Chrome, Safari and Opera */
+.box::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.box {
+  height: 95%;
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.btn {
+  box-shadow: 0px 6px 0px #eebf1d, 1px 6px 8px 4px rgba(0, 0, 0, 0.3);
+  border-radius: 20px;
+}
+
+.wrapper {
+  height: 90%;
+}
+
+.btn-1 {
+  box-shadow: 0px 6px 0px #be2568;
+  border-radius: 20px;
+}
