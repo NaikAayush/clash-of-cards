@@ -1,12 +1,13 @@
 import {
-  readFile,
   readFileSync,
   writeFileSync,
   readdirSync,
   rmSync,
   existsSync,
   mkdirSync,
+  createReadStream,
 } from "fs";
+import { pinFileToIPFS } from "./pinata";
 const sharp = require("sharp");
 const { scale } = require("scale-that-svg");
 
@@ -162,9 +163,11 @@ async function createImage(idx: number) {
       .replace("<!-- data -->", await getLayer("data0"))
       .replace("<!-- data1 -->", data);
 
+    writeFileSync(`./out/${idx}.svg`, final);
+    const res = await pinFileToIPFS(createReadStream(`./out/${idx}.svg`));
     const meta = {
       name: adj + "-" + name,
-      image: `${idx}.png`,
+      image: `https://mygateway.mypinata.cloud/ipfs/${res.IpfsHash}`,
       attributes: {
         rarity: rarity,
         health: health,
@@ -172,8 +175,7 @@ async function createImage(idx: number) {
       },
     };
     writeFileSync(`./out/${idx}.json`, JSON.stringify(meta));
-    writeFileSync(`./out/${idx}.svg`, final);
-    svgToPng(idx);
+    // svgToPng(idx);
   }
 }
 
