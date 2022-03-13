@@ -10,6 +10,7 @@ import { DraggableCardComponent } from './components/draggable-card/draggable-ca
 import { HomeComponent } from './components/home/home.component';
 import { CardItemComponent } from './components/home/card-item/card-item.component';
 import { AuthComponent } from './components/auth/auth.component';
+import { LoaderComponent } from './components/loader/loader.component';
 
 @NgModule({
   declarations: [
@@ -19,6 +20,7 @@ import { AuthComponent } from './components/auth/auth.component';
     CardItemComponent,
     AuthComponent,
     DraggableCardComponent,
+    LoaderComponent,
   ],
   imports: [
     BrowserModule,

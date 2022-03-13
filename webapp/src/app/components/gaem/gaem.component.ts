@@ -15,7 +15,7 @@ import {
   transition,
   trigger,
 } from '@angular/animations';
-import { timer } from 'rxjs';
+import { Subscription, timer } from 'rxjs';
 
 @Component({
   selector: 'app-gaem',
@@ -46,7 +46,11 @@ export class GaemComponent implements OnInit {
   public fightingZones: Card[][] = [[], []];
   public roundNum: number = 1;
   public secondsElapsed: number = 90;
+  public roundTimes: number[] = [];
+  public timer = timer(1000, 1000);
   public coinsEarned: number = 100;
+  public waitingForResp = false;
+  private subscription?: Subscription;
 
   constructor(private service: GaemService) {
     this.service.onReset(() => {
@@ -59,6 +63,26 @@ export class GaemComponent implements OnInit {
     this.addToDeck(this.service.serveHand(4));
     this.fightingZones = [[], []];
     this.roundNum = 1;
+
+    this.resetTimer();
+
+    this.roundTimes = [];
+  }
+
+  resetTimer() {
+    if (this.subscription !== undefined) {
+      this.subscription.unsubscribe();
+    }
+
+    this.timer = timer(1000, 1000);
+    this.secondsElapsed = 30;
+    this.subscription = this.timer.subscribe((val) => {
+      this.secondsElapsed = 30 - (val + 1);
+
+      if (this.secondsElapsed <= 0) {
+        this.secondsElapsed = 0;
+      }
+    });
   }
 
   addToDeck(newCards: Card[]) {
@@ -131,6 +155,10 @@ export class GaemComponent implements OnInit {
   }
 
   continue() {
+    if (this.waitingForResp) {
+      return;
+    }
+
     let message = 'Next round started';
     let toContinue = true;
 
@@ -149,8 +177,18 @@ export class GaemComponent implements OnInit {
     console.log(toContinue, message);
 
     if (toContinue) {
-      // TODO: remove this sim
-      this.roundCompleted([100, 100]);
+      this.waitingForResp = true;
+      this.roundTimes.push(this.secondsElapsed);
+
+      setTimeout(() => {
+        this.roundNum += 1;
+        this.waitingForResp = false;
+
+        // TODO: remove this sim
+        this.roundCompleted([40, 70]);
+
+        this.resetTimer();
+      }, 2000);
     }
   }
 
