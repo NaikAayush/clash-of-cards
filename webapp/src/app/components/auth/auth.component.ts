@@ -7,6 +7,7 @@ import { EthersService } from 'src/app/services/ethers/ethers.service';
   selector: 'app-auth',
   templateUrl: './auth.component.html',
   styleUrls: ['./auth.component.css'],
+  animations: [openCloseAnimation],
 })
 export class AuthComponent implements OnInit {
   modalShow: boolean = false;
@@ -24,6 +25,6 @@ export class AuthComponent implements OnInit {
 
   async login() {
     await this.ethersService.initEthers();
-    this.router.navigateByUrl('dev');
+    this.modalShow = false;
   }
 }
