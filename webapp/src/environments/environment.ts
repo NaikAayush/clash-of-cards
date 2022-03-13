@@ -4,6 +4,7 @@
 
 export const environment = {
   production: false,
+  clashTokenAddress: '0xF88c48530129EBE9f052A60a704fABD98d7776df',
 };
 
 /*

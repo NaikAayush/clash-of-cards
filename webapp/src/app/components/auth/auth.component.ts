@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { openCloseAnimation } from '../../services/animation/animation.service';
 import { EthersService } from 'src/app/services/ethers/ethers.service';
+import { SequenceService } from 'src/app/services/sequence/sequence.service';
 
 @Component({
   selector: 'app-auth',
@@ -11,7 +12,11 @@ import { EthersService } from 'src/app/services/ethers/ethers.service';
 })
 export class AuthComponent implements OnInit {
   modalShow: boolean = false;
-  constructor(private ethersService: EthersService, private router: Router) {}
+  constructor(
+    private ethersService: EthersService,
+    private router: Router,
+    private sequence: SequenceService
+  ) {}
 
   async ngOnInit() {
     if (await this.ethersService.isLoggedIn()) {
@@ -26,5 +31,8 @@ export class AuthComponent implements OnInit {
   async login() {
     await this.ethersService.initEthers();
     this.modalShow = false;
+  }
+  async loginSequence() {
+    await this.sequence.login();
   }
 }
