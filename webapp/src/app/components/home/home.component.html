@@ -1,0 +1,99 @@
+<div
+  class="flex flex-row bg-[url('assets/images/home-bg.svg')] h-screen w-screen bg-cover items-center justify-center"
+>
+  <div class="wrapper mx-16 w-2/5">
+    <div class="text-4xl font-semibold p-2">My Collection</div>
+    <div class="box w-full overflow-y-scroll">
+      <div
+        class="relative flex flex-row flex-wrap gap-8 p-8 items-center justify-center"
+        cdkDropListGroup
+      >
+        <div
+          class="transition-shadow min-h-[15rem] min-w-[10rem] duration-300 self-center rounded-xl bg-gray-100"
+          cdkDropList
+          (cdkDropListDropped)="dropCard($event)"
+          cdkDropListOrientation="horizontal"
+          [cdkDropListData]="cards"
+          [cdkDropListEnterPredicate]="canBeDropped"
+          [cdkDropListConnectedTo]="selectedZoneIds"
+          *ngFor="let cards of collectionDropList; let i = index"
+          [id]="'collection-zone-' + i"
+        >
+          <ng-container class="card" *ngFor="let card of cards">
+            <app-draggable-card
+              class="card"
+              [card]="card"
+              [showHealth]="false"
+              #wrapper
+            ></app-draggable-card>
+            <ng-container
+              *ngTemplateOutlet="
+                wrapper.template === undefined ? null : wrapper.template
+              "
+            ></ng-container>
+          </ng-container>
+        </div>
+      </div>
+      <div
+        class="grid sticky bottom-0 bg-gradient-to-t from-[#F2F0EA] h-20 justify-items-end pr-28 items-center"
+      >
+        <button
+          routerLink="market"
+          class="btn w-48 h-12 font-bold text-lg bg-[#FDDD5E] hover:bg-[#fdd120]"
+        >
+          Marketplace
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="flex flex-col h-full w-3/5 items-center justify-center">
+    <div class="text-2xl font-semibold">Choose 8 cards for a face off</div>
+    <div
+      class="flex flex-row flex-wrap p-8 gap-8 mx-24 justify-center items-center"
+      cdkDropListGroup
+    >
+      <div
+        class="transition-shadow min-h-[15rem] min-w-[10rem] duration-300 self-center rounded-xl bg-gray-100"
+        cdkDropList
+        (cdkDropListDropped)="dropCard($event)"
+        cdkDropListOrientation="horizontal"
+        [cdkDropListData]="selectedCardList[i]"
+        [cdkDropListEnterPredicate]="canBeDropped"
+        [cdkDropListConnectedTo]="collectionZoneIds"
+        *ngFor="let cards of selectedCardList; let i = index"
+        [id]="'selected-zone-' + i"
+      >
+        <ng-container *ngFor="let card of cards" class="card">
+          <app-draggable-card
+            class="card"
+            [card]="card"
+            [showHealth]="false"
+            #wrapper
+          ></app-draggable-card>
+          <ng-container
+            *ngTemplateOutlet="
+              wrapper.template === undefined ? null : wrapper.template
+            "
+          ></ng-container>
+        </ng-container>
+      </div>
+    </div>
+    <button
+      class="btn-1 w-48 h-12 font-bold text-lg text-white bg-[#ed2e82] hover:bg-[#be2568]"
+      (click)="goToBattle()"
+    >
+      Go for Battle
+    </button>
+  </div>
+</div>
+<div
+  class="flex flex-row items-center justify-center p-8 absolute top-0 right-0 gap-4"
+>
+  <img class="h-14 md:h-20" src="assets/images/coin.svg" alt="" />
+  <p class="font-bold text-5xl">{{ balance }}</p>
+</div>
+<div
+  class="flex flex-row items-center justify-center p-8 absolute bottom-0 right-0 gap-4"
+>
+  <img class="h-14 md:h-20" src="assets/images/logo-text.svg" alt="" />
+</div>
