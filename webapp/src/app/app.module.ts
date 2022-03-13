@@ -14,6 +14,7 @@ import { LoaderComponent } from './components/loader/loader.component';
 import { MarketplaceComponent } from './components/marketplace/marketplace.component';
 import { CardItemMarketComponent } from './components/marketplace/card-item-market/card-item-market.component';
 import { HttpClientModule } from '@angular/common/http';
+import { LandingComponent } from './components/landing/landing.component';
 
 @NgModule({
   declarations: [
@@ -26,6 +27,7 @@ import { HttpClientModule } from '@angular/common/http';
     LoaderComponent,
     MarketplaceComponent,
     CardItemMarketComponent,
+    LandingComponent,
   ],
   imports: [
     BrowserModule,
