@@ -1,10 +1,42 @@
 <div
-  class="flex flex-row bg-[url('assets/images/home-bg.svg')] h-screen w-screen bg-cover"
+  class="flex flex-row bg-[url('assets/images/home-bg.svg')] h-screen w-screen bg-cover items-center justify-center"
 >
-  <div class="h-full w-2/5">
-    <div class="text-4xl font-semibold">My Collection</div>
-    <div class="flex flex-row flex-wrap gap-8 p-8">
-      <app-card-item></app-card-item>
+  <div class="wrapper mx-16 w-2/5">
+    <div class="text-4xl font-semibold p-2">My Collection</div>
+    <div class="box w-full overflow-y-scroll">
+      <div
+        class="relative flex flex-row flex-wrap gap-8 p-8 items-center justify-center"
+      >
+        <app-card-item></app-card-item>
+        <app-card-item></app-card-item>
+        <app-card-item></app-card-item>
+        <app-card-item></app-card-item>
+        <app-card-item></app-card-item>
+        <app-card-item></app-card-item>
+        <app-card-item></app-card-item>
+        <app-card-item></app-card-item>
+        <app-card-item></app-card-item>
+        <app-card-item></app-card-item>
+        <app-card-item></app-card-item>
+        <app-card-item></app-card-item>
+        <app-card-item></app-card-item>
+      </div>
+      <div
+        class="grid sticky bottom-0 bg-gradient-to-t from-[#F2F0EA] h-20 justify-items-end pr-28 items-center"
+      >
+        <button
+          class="btn w-48 h-12 font-bold text-lg bg-[#FDDD5E] hover:bg-[#fdd120]"
+        >
+          Marketplace
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="flex flex-col h-full w-3/5 items-center justify-center">
+    <div class="text-2xl font-semibold">Choose 8 cards for a face off</div>
+    <div
+      class="flex flex-row flex-wrap p-8 gap-8 mx-24 justify-center items-center"
+    >
       <app-card-item></app-card-item>
       <app-card-item></app-card-item>
       <app-card-item></app-card-item>
@@ -14,6 +46,11 @@
       <app-card-item></app-card-item>
       <app-card-item></app-card-item>
     </div>
+    <button
+      class="btn-1 w-48 h-12 font-bold text-lg text-white bg-[#ed2e82] hover:bg-[#e9126f]"
+    >
+      Go for Battle
+    </button>
   </div>
-  <div class="h-full w-3/5"></div>
 </div>
+<div class="absolute top-0 right-0 h-16 w-16 ...">03</div>
