@@ -109,11 +109,26 @@ contract MatchMaking is KeeperCompatibleInterface {
     event OpponentCardSubmit(address indexed opponent, uint256 indexed matchId, Card card_1, Card card_2);
 
     function submitCard(uint256 matchId, address player, uint hp_card1, uint maxHp_card1, uint atk_card1, string memory url_card1, uint hp_card2, uint maxHp_card2, uint atk_card2, string memory url_card2) public {
-        Match memory currMatch = matches[matchId];
+        Match storage currMatch = matches[matchId];
         uint len = currMatch.rounds.length;
-        Round memory currRound = currMatch.rounds[len - 1];
+
+        Round memory currRound;
+        if (len == 0) {
+            currMatch.rounds.push();
+            currRound = currMatch.rounds[0];
+        } else {
+            Round storage lastRound = currMatch.rounds[len - 1];
+            if (lastRound.p1_ready && lastRound.p2_ready) {
+                currMatch.rounds.push();
+                currRound = currMatch.rounds[len];
+            } else {
+                currRound = lastRound;
+            }
+        }
+
         Card memory card_1 = Card(hp_card1, maxHp_card1, atk_card1, url_card1);
         Card memory card_2 = Card(hp_card2, maxHp_card2, atk_card2, url_card2);
+
         if (currMatch.p1.addr == player) {
             currRound.p1_card1 = card_1;
             currRound.p1_card2 = card_2;
@@ -121,7 +136,7 @@ contract MatchMaking is KeeperCompatibleInterface {
         } else {
             currRound.p2_card1 = card_1;
             currRound.p2_card2 = card_2;
-            currRound.p2_ready = true;      
+            currRound.p2_ready = true;
         }
         emit OpponentCardSubmit(player, matchId, card_1, card_2);
 
@@ -130,7 +145,7 @@ contract MatchMaking is KeeperCompatibleInterface {
         }
     }
 
-    event EndOfRound(address indexed p1, address indexed p2, uint256 indexed matchId, Round round);
+    event EndOfRound(uint256 indexed matchId, address indexed p1, address indexed p2, Round round);
 
     function startRound(uint256 matchId, Round memory round) private {
         uint p1_atk = round.p1_card1.atk + round.p1_card2.atk;
@@ -163,7 +178,7 @@ contract MatchMaking is KeeperCompatibleInterface {
         address p1 = matches[matchId].p1.addr;
         address p2 = matches[matchId].p2.addr;
 
-        emit EndOfRound(p1, p2, matchId, round);
+        emit EndOfRound(matchId, p1, p2, round);
     }
 
     function payWinner(uint256 amount) public {
