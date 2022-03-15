@@ -5,6 +5,26 @@ import ClashToken from '../../../assets/abis/ClashToken.json';
 import ClashNFT from '../../../assets/abis/ClashOfCards.json';
 import ClashMatchMaking from '../../../assets/abis/ClashMatchMaking.json';
 import { BigNumber, ContractInterface } from 'ethers';
+import { Card } from 'src/app/models/card';
+
+interface ContractCard {
+  hp: BigNumber;
+  maxHp: BigNumber;
+  atk: BigNumber;
+  url: string;
+}
+
+function toActualCard(contractCard: ContractCard): Card {
+  const newCard = new Card({
+    imgUrl: contractCard.url,
+    maxHealth: contractCard.maxHp.toNumber(),
+    damage: contractCard.atk.toNumber(),
+  });
+
+  newCard.health = contractCard.hp.toNumber();
+
+  return newCard;
+}
 
 @Injectable({
   providedIn: 'root',
@@ -95,7 +115,7 @@ export class ContractService {
     );
   }
 
-  async joinQueue(matchStartedCb: (_: BigNumber) => void) {
+  async joinQueue(matchStartedCb: (_: BigNumber, __: string) => void) {
     await this.initContracts();
     this.account = await this.ethersService.provider.send(
       'eth_requestAccounts',
@@ -114,7 +134,7 @@ export class ContractService {
 
     const tx = await this.clashMatchMakingContract.joinQueue(
       this.account[0],
-      50
+      this.ethersService.utils.parseEther(amount.toString()).toString()
     );
     await tx.wait();
     console.log('Joined queue', tx);
@@ -122,7 +142,7 @@ export class ContractService {
     this.listenForMatchId(matchStartedCb);
   }
 
-  async listenForMatchId(matchStartedCb: (_: BigNumber) => void) {
+  async listenForMatchId(matchStartedCb: (_: BigNumber, __: string) => void) {
     await this.initContracts();
     this.account = await this.ethersService.provider.send(
       'eth_requestAccounts',
@@ -144,14 +164,14 @@ export class ContractService {
         this.currentMatchId = matchId;
         this.otherPlayerAddr = player2;
 
-        matchStartedCb(matchId);
+        matchStartedCb(matchId, this.otherPlayerAddr);
         this.clashMatchMakingContract.off(event, eventCb);
       } else if (player2 === myAddress) {
         console.log("Got match for me. I'm player 2.");
         this.currentMatchId = matchId;
         this.otherPlayerAddr = player1;
 
-        matchStartedCb(matchId);
+        matchStartedCb(matchId, this.otherPlayerAddr);
         this.clashMatchMakingContract.off(event, eventCb);
       } else {
         console.log('Not my match.');
@@ -159,5 +179,60 @@ export class ContractService {
     };
 
     this.clashMatchMakingContract.on(event, eventCb);
+  }
+
+  async submitCards(matchId: BigNumber, card1: Card, card2: Card) {
+    await this.initContracts();
+    this.account = await this.ethersService.provider.send(
+      'eth_requestAccounts',
+      []
+    );
+    const myAddress = this.account[0];
+    console.log('Address', myAddress);
+
+    const tx = await this.clashMatchMakingContract.submitCard(
+      matchId,
+      this.account[0],
+      card1.health,
+      card1.meta.maxHealth,
+      card1.meta.damage,
+      card1.meta.imgUrl,
+      card2.health,
+      card2.meta.maxHealth,
+      card2.meta.damage,
+      card2.meta.imgUrl
+    );
+    await tx.wait();
+    console.log('Joined queue', tx);
+  }
+
+  async listenForEnemyCard(matchId: BigNumber, enemyAddress: string) {
+    const event = this.clashMatchMakingContract.filters.OpponentCardSubmit(
+      enemyAddress,
+      matchId
+    );
+
+    this.clashMatchMakingContract.on(
+      event,
+      (enemyAddress: string, matchId: BigNumber, card1: any, card2: any) => {
+        console.log('Got enemy cards', enemyAddress, matchId, card1, card2);
+      }
+    );
+  }
+
+  listenForRoundEnd(matchId: BigNumber) {
+    const event = this.clashMatchMakingContract.filters.EndOfRound(matchId);
+
+    const prom = new Promise((resolve, reject) => {
+      this.clashMatchMakingContract.once(
+        event,
+        (matchId: BigNumber, player1: string, player2: string, round: any) => {
+          console.log('round was over', matchId, player1, player2, round);
+          resolve(round);
+        }
+      );
+    });
+
+    return prom;
   }
 }

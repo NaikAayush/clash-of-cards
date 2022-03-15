@@ -18,6 +18,7 @@ import {
 import { Subscription, timer } from 'rxjs';
 import { Router } from '@angular/router';
 import { ScoreService } from 'src/app/services/score/score.service';
+import { ContractService } from 'src/app/services/contract/contract.service';
 
 @Component({
   selector: 'app-gaem',
@@ -63,7 +64,8 @@ export class GaemComponent implements OnInit {
   constructor(
     private service: GaemService,
     private router: Router,
-    private scorer: ScoreService
+    private scorer: ScoreService,
+    private contractService: ContractService
   ) {
     this.service.onReset(() => {
       this.reset();
@@ -101,6 +103,17 @@ export class GaemComponent implements OnInit {
 
     this.showLoseModal = false;
     this.showWinModal = false;
+
+    if (this.service.matchId === undefined) {
+      console.error("Match ID wasn't set aaa");
+    } else if (this.service.enemyAddress === undefined) {
+      console.error("enemy address wasn't set aaa");
+    } else {
+      this.contractService.listenForEnemyCard(
+        this.service.matchId,
+        this.service.enemyAddress
+      );
+    }
   }
 
   stopTimer() {
@@ -113,9 +126,10 @@ export class GaemComponent implements OnInit {
     this.stopTimer();
 
     this.timer = timer(1000, 1000);
-    this.secondsElapsed = 30;
+    const roundTimeLimit = 120;
+    this.secondsElapsed = 120;
     this.subscription = this.timer.subscribe((val) => {
-      this.secondsElapsed = 30 - (val + 1);
+      this.secondsElapsed = 120 - (val + 1);
 
       if (this.secondsElapsed <= 0) {
         this.secondsElapsed = 0;
@@ -221,7 +235,7 @@ export class GaemComponent implements OnInit {
     }
   }
 
-  continue() {
+  async continue() {
     if (this.waitingForResp) {
       return;
     }
@@ -248,31 +262,41 @@ export class GaemComponent implements OnInit {
       this.stopTimer();
       this.roundTimes.push(this.secondsElapsed);
 
-      setTimeout(() => {
-        this.waitingForResp = false;
+      if (this.service.matchId !== undefined) {
+        await this.contractService.submitCards(
+          this.service.matchId,
+          this.fightingZones[0][0],
+          this.fightingZones[1][0]
+        );
+      } else {
+        console.error("Match ID wasn't set aaa");
+      }
 
-        // TODO: remove this sim
-        this.addEnemyCards();
+      // setTimeout(() => {
+      //   this.waitingForResp = false;
 
-        setTimeout(() => {
-          const enemyDamages = this.enemyFightingZones.map(
-            (zone) => zone[0]?.meta.damage
-          );
-          this.takeDamages(this.fightingZones, enemyDamages);
-          const playerDamages = this.fightingZones.map(
-            (zone) => zone[0]?.meta.damage
-          );
-          this.takeDamages(this.enemyFightingZones, playerDamages);
-          this.roundCompleted();
+      //   // TODO: remove this sim
+      //   this.addEnemyCards();
 
-          this.resetTimer();
-          this.roundNum += 1;
+      //   setTimeout(() => {
+      //     const enemyDamages = this.enemyFightingZones.map(
+      //       (zone) => zone[0]?.meta.damage
+      //     );
+      //     this.takeDamages(this.fightingZones, enemyDamages);
+      //     const playerDamages = this.fightingZones.map(
+      //       (zone) => zone[0]?.meta.damage
+      //     );
+      //     this.takeDamages(this.enemyFightingZones, playerDamages);
+      //     this.roundCompleted();
 
-          if (this.noCardsLeft()) {
-            this.showLoseModal = true;
-          }
-        }, 700);
-      }, 2000);
+      //     this.resetTimer();
+      //     this.roundNum += 1;
+
+      //     if (this.noCardsLeft()) {
+      //       this.showLoseModal = true;
+      //     }
+      //   }, 700);
+      // }, 2000);
     }
   }
 

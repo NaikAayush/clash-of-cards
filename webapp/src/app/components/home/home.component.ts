@@ -148,13 +148,16 @@ export class HomeComponent implements OnInit {
       console.log(message);
       const selectedCards = this.selectedCardList?.map((arr) => arr[0]);
       this.gaemService.setDeckCards(selectedCards);
-      await this.contractService.joinQueue((matchId: BigNumber) => {
-        console.log('Starting match with ID', matchId);
+      await this.contractService.joinQueue(
+        (matchId: BigNumber, enemyAddress: string) => {
+          console.log('Starting match with ID', matchId);
 
-        this.gaemService.matchId = matchId;
+          this.gaemService.matchId = matchId;
+          this.gaemService.enemyAddress = enemyAddress;
 
-        this.router.navigateByUrl('/gaem');
-      });
+          this.router.navigateByUrl('/gaem');
+        }
+      );
     }
   }
 }
