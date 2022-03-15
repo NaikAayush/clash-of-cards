@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsc",
     "test": "tsc && node dist/index",
-    "start": "node dist/index"
+    "start": "node dist/index.js"
   },
   "devDependencies": {
     "@types/express": "^4.17.13",
