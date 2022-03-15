@@ -12,6 +12,7 @@ struct Player {
 
 struct Card {
     uint hp;
+    uint maxHp;
     uint atk;
     string url;
 }
@@ -107,12 +108,12 @@ contract MatchMaking is KeeperCompatibleInterface {
 
     event OpponentCardSubmit(address indexed opponent, uint256 indexed matchId, Card card_1, Card card_2);
 
-    function submitCard(uint256 matchId, address player, uint hp_card1, uint atk_card1, string memory url_card1, uint hp_card2, uint atk_card2, string memory url_card2) public {
+    function submitCard(uint256 matchId, address player, uint hp_card1, uint maxHp_card1, uint atk_card1, string memory url_card1, uint hp_card2, uint maxHp_card2, uint atk_card2, string memory url_card2) public {
         Match memory currMatch = matches[matchId];
         uint len = currMatch.rounds.length;
         Round memory currRound = currMatch.rounds[len - 1];
-        Card memory card_1 = Card(hp_card1, atk_card1, url_card1);
-        Card memory card_2 = Card(hp_card2, atk_card2, url_card2);
+        Card memory card_1 = Card(hp_card1, maxHp_card1, atk_card1, url_card1);
+        Card memory card_2 = Card(hp_card2, maxHp_card2, atk_card2, url_card2);
         if (currMatch.p1.addr == player) {
             currRound.p1_card1 = card_1;
             currRound.p1_card2 = card_2;
