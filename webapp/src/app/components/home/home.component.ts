@@ -8,6 +8,7 @@ import {
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { BigNumber } from 'ethers';
 import { Card, CardMeta } from 'src/app/models/card';
 import { ContractService } from 'src/app/services/contract/contract.service';
 import { GaemService } from 'src/app/services/gaem/gaem.service';
@@ -131,7 +132,7 @@ export class HomeComponent implements OnInit {
     return drop.data.length === 0;
   }
 
-  goToBattle() {
+  async goToBattle() {
     const allSelectedFilled =
       this.selectedCardList?.filter((arr) => arr.length > 0).length == 8;
 
@@ -145,10 +146,17 @@ export class HomeComponent implements OnInit {
     }
 
     if (toContinue) {
+      this.loading = true;
       console.log(message);
       const selectedCards = this.selectedCardList?.map((arr) => arr[0]);
       this.gaemService.setDeckCards(selectedCards);
-      this.router.navigateByUrl('/gaem');
+      await this.contractService.joinQueue((matchId: BigNumber) => {
+        console.log('Starting match with ID', matchId);
+
+        this.gaemService.matchId = matchId;
+
+        this.router.navigateByUrl('/gaem');
+      });
     }
   }
 }
