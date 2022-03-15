@@ -2,6 +2,7 @@
 pragma solidity ^0.8.0;
 
 import "@chainlink/contracts/src/v0.8/KeeperCompatible.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 struct Player {
     address addr;
@@ -35,7 +36,13 @@ struct Match {
 contract MatchMaking is KeeperCompatibleInterface {
     Player[] queue;
     mapping(uint256 => Match) matches; 
+
     function joinQueue(address addr, uint stake) public {
+        require(
+            clashToken.transferFrom(msg.sender, address(this), stake),
+            "Pay Up"
+        );
+
         Player memory player = Player(addr, stake, true);
         queue.push(player);
     }
@@ -158,6 +165,13 @@ contract MatchMaking is KeeperCompatibleInterface {
         emit EndOfRound(p1, p2, matchId, round);
     }
 
+    function payWinner(uint256 amount) public {
+        require(
+            clashToken.transfer(msg.sender, amount),
+            "Could not pay winner"
+        );
+    }
+
     /**
     * Public counter variable
     **/
@@ -169,11 +183,16 @@ contract MatchMaking is KeeperCompatibleInterface {
     uint public immutable interval;
     uint public lastTimeStamp;
 
-    constructor(uint updateInterval) {
+    // clashtoken
+    IERC20 public clashToken;
+
+    constructor(uint updateInterval, address _clashTokenAddress) {
       interval = updateInterval;
       lastTimeStamp = block.timestamp;
 
       counter = 0;
+
+      clashToken = IERC20(_clashTokenAddress);
     }
 
     function checkUpkeep(bytes calldata /* checkData */) external view override returns (bool upkeepNeeded, bytes memory performData) {
