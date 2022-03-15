@@ -54,9 +54,11 @@ contract MatchMaking is KeeperCompatibleInterface {
 
     function getMatch(address addr, uint stake) public returns (Player memory opponent) {
         uint opponentIndex;
+        bool found = false;
         for(uint i = queue.length - 1; i >= 0; i--) {
             if (queue[i].active && queue[i].stake == stake && queue[i].addr != addr) {
                 opponentIndex = i;
+                found = true;
             }
 
             if (i == 0) {
@@ -64,7 +66,8 @@ contract MatchMaking is KeeperCompatibleInterface {
             }
         }
 
-        // TODO: error handling if opponentIndex go brr?
+        require(found, "Cannot find an opponent.");
+
         queue[opponentIndex].active = false;
         queue[getIndexOfPlayer(addr)].active = false;
         return queue[opponentIndex];
