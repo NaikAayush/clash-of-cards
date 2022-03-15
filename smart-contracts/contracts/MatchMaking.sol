@@ -70,7 +70,7 @@ contract MatchMaking is KeeperCompatibleInterface {
         return queue[opponentIndex];
     }
 
-    event PublishMatchId(address p1, address p2, uint256 matchId);
+    event PublishMatchId(address indexed p1, address indexed p2, uint256 indexed matchId);
 
     function generateMatchID() private view returns (uint256 hash) {
         return uint256(keccak256(abi.encodePacked(block.difficulty, block.timestamp)));
@@ -95,7 +95,7 @@ contract MatchMaking is KeeperCompatibleInterface {
         }
     }
 
-    event OpponentCardSubmit(address opponent, uint256 matchId, Card card_1, Card card_2);
+    event OpponentCardSubmit(address indexed opponent, uint256 indexed matchId, Card card_1, Card card_2);
 
     function submitCard(uint256 matchId, address player, uint hp_card1, uint atk_card1, string memory url_card1, uint hp_card2, uint atk_card2, string memory url_card2) public {
         Match memory currMatch = matches[matchId];
@@ -119,7 +119,7 @@ contract MatchMaking is KeeperCompatibleInterface {
         }
     }
 
-    event EndOfRound(address p1, address p2, uint256 matchId, Round round);
+    event EndOfRound(address indexed p1, address indexed p2, uint256 indexed matchId, Round round);
 
     function startRound(uint256 matchId, Round memory round) private {
         uint p1_atk = round.p1_card1.atk + round.p1_card2.atk;
