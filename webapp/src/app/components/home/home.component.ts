@@ -47,14 +47,16 @@ export class HomeComponent implements OnInit {
     await this.newUser();
     console.log(this.data);
     console.log(this.dataCommon);
-    for (let i = 1; i < this.data.length; i++) {
-      const someCardMeta: CardMeta = {
-        imgUrl: '/assets/images/card-example.svg',
-        damage: 100,
-        maxHealth: 500,
-      };
-      someCardMeta.imgUrl = this.data[i];
-      this.collection?.push(new Card(someCardMeta));
+    for (let i = 0; i < this.data.length; i++) {
+      if (this.data[i].includes('pinata')) {
+        const someCardMeta: CardMeta = {
+          imgUrl: '/assets/images/card-example.svg',
+          damage: 100,
+          maxHealth: 500,
+        };
+        someCardMeta.imgUrl = this.data[i];
+        this.collection?.push(new Card(someCardMeta));
+      }
     }
     for (let i = 1; i < this.dataCommon.length; i++) {
       const someCardMeta: CardMeta = {
