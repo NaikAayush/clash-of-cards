@@ -6,6 +6,7 @@ import { RedisClientType } from "@node-redis/client";
 
 import "dotenv/config";
 import { pinata } from "./routes/pinata";
+import { contract } from "./routes/contract";
 
 export let client: RedisClientType;
 
@@ -26,6 +27,7 @@ app.use(cors(options));
 const port = 8080;
 
 app.use("", pinata);
+app.use("", contract);
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
