@@ -34,17 +34,18 @@ export class ContractService {
     );
     console.log(this.account[0]);
     console.log(this.ethersService.utils.parseEther(amount).toString());
-    const tx = await this.clashTokenContract.approve(
+    let tx = await this.clashTokenContract.approve(
       environment.clashNFTAddress,
       this.ethersService.utils.parseEther(amount).toString()
     );
     await tx.wait();
-    await this.clashNFTContract.payToMint(
+    tx = await this.clashNFTContract.payToMint(
       this.account[0],
       url,
       this.ethersService.utils.parseEther(amount).toString()
     );
     await tx.wait();
+    console.log(tx);
   }
 
   async getNFTs() {

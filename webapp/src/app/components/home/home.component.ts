@@ -11,6 +11,7 @@ import { Router } from '@angular/router';
 import { Card, CardMeta } from 'src/app/models/card';
 import { ContractService } from 'src/app/services/contract/contract.service';
 import { GaemService } from 'src/app/services/gaem/gaem.service';
+import { PinataService } from 'src/app/services/pinata/pinata.service';
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -19,6 +20,7 @@ import { environment } from 'src/environments/environment';
   styleUrls: ['./home.component.css'],
 })
 export class HomeComponent implements OnInit {
+  loading = true;
   collection: Card[] = [];
   collectionDropList?: Card[][];
   selectedCardList: Card[][] = [];
@@ -34,7 +36,8 @@ export class HomeComponent implements OnInit {
     private gaemService: GaemService,
     private router: Router,
     private contractService: ContractService,
-    private http: HttpClient
+    private http: HttpClient,
+    private pinata: PinataService
   ) {
     // TODO: remove dis
   }
@@ -49,23 +52,25 @@ export class HomeComponent implements OnInit {
     console.log(this.dataCommon);
     for (let i = 0; i < this.data.length; i++) {
       if (this.data[i].includes('pinata')) {
+        const metadata = await this.pinata.getMetadeta(
+          this.data[i].split('ipfs/')[1]
+        );
+        console.log(metadata);
         const someCardMeta: CardMeta = {
-          imgUrl: '/assets/images/card-example.svg',
-          damage: 100,
-          maxHealth: 500,
+          imgUrl: environment.apiUrl + 'ipfs/' + this.data[i].split('ipfs/')[1],
+          damage: metadata.damage,
+          maxHealth: metadata.health,
         };
-        someCardMeta.imgUrl = this.data[i];
         this.collection?.push(new Card(someCardMeta));
       }
     }
     for (let i = 1; i < this.dataCommon.length; i++) {
+      const metadata = await this.pinata.getMetadeta(this.dataCommon[i]);
       const someCardMeta: CardMeta = {
-        imgUrl: '/assets/images/card-example.svg',
-        damage: 100,
-        maxHealth: 500,
+        imgUrl: environment.apiUrl + 'ipfs/' + this.dataCommon[i],
+        damage: metadata.damage,
+        maxHealth: metadata.health,
       };
-      someCardMeta.imgUrl =
-        'https://mygateway.mypinata.cloud/ipfs/' + this.dataCommon[i];
       this.collection?.push(new Card(someCardMeta));
     }
     this.collection.forEach((card) => {
@@ -77,6 +82,7 @@ export class HomeComponent implements OnInit {
       Array(this.collectionDropList.length).keys()
     ).map((i) => `collection-zone-${i}`);
     this.selectedCardList = Array.from({ length: 8 }, () => []);
+    this.loading = false;
   }
 
   async newUser() {

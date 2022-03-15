@@ -5,4 +5,5 @@ export const environment = {
   pinata_api_key: 'a9b72688ca05cbded4de',
   pinata_secret_api_key:
     '05e3dfe9712ad57c1b89e1dbb49e352adc31d772761b8327a866882884a1ec85',
+  apiUrl: 'https://api.clashof.cards/',
 };

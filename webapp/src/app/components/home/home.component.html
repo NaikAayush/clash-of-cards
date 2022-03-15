@@ -1,4 +1,5 @@
 <div
+  *ngIf="!loading"
   class="flex flex-row bg-[url('assets/images/home-bg.svg')] h-screen w-screen bg-cover items-center justify-center"
 >
   <div class="wrapper mx-16 w-2/5">
@@ -87,6 +88,7 @@
   </div>
 </div>
 <div
+  *ngIf="!loading"
   class="flex flex-row items-center justify-center p-8 absolute top-0 right-0 gap-4"
 >
   <img class="h-14 md:h-20" src="assets/images/coin.svg" alt="" />
@@ -98,3 +100,4 @@
   <img class="h-14 md:h-20" src="assets/images/logo-text.svg" alt="" />
 </div>
 <app-auth></app-auth>
+<app-loader *ngIf="loading"></app-loader>
