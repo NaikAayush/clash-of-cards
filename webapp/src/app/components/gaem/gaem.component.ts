@@ -290,11 +290,20 @@ export class GaemComponent implements OnInit {
     });
   }
 
-  roundCompleted() {
+  updateScore() {
     this.coinsEarned = this.scorer.getScore(
-      this.deckCards.concat(this.fightingZones.map((zone) => zone[0])),
+      this.deckCards.concat(
+        this.fightingZones
+          .filter((zone) => zone.length > 0)
+          .map((zone) => zone[0]),
+        this.service.deckCards
+      ),
       this.roundTimes
     );
+  }
+
+  roundCompleted() {
+    this.updateScore();
     this.checkPlayerWin();
 
     this.addToDeck(
@@ -311,7 +320,6 @@ export class GaemComponent implements OnInit {
   }
 
   cardDied(zones: Card[][], zoneIndex: number) {
-    console.log(`Killing card with index ${zoneIndex}`);
     const removedCard = zones[zoneIndex][0];
     if (removedCard !== undefined) {
       removedCard.added = false;
@@ -319,10 +327,12 @@ export class GaemComponent implements OnInit {
 
     setTimeout(() => {
       zones[zoneIndex].shift();
+
+      this.updateScore();
     }, 1000);
   }
 
   playAgain() {
-    this.router.navigateByUrl('/');
+    this.router.navigateByUrl('/dashboard');
   }
 }

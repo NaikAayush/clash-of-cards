@@ -14,8 +14,8 @@ export class ScoreService {
     let score = baseScore;
 
     score -= 10 * cardsLost;
-    const timeMultiplier = 0.2;
-    const maxRounds = 6;
+    const timeMultiplier = 0.1;
+    const maxRounds = 12;
     for (
       let roundId = 0;
       roundId < roundTimes.length && roundId < maxRounds;
