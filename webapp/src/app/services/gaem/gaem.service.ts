@@ -5,7 +5,7 @@ import { Card, CardMeta } from 'src/app/models/card';
   providedIn: 'root',
 })
 export class GaemService {
-  private deckCards: Card[];
+  public deckCards: Card[];
   private onResetCb?: () => void;
 
   constructor() {
