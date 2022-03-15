@@ -49,30 +49,28 @@ export class HomeComponent implements OnInit {
     ).split('.')[0];
     await this.newUser();
     console.log(this.data);
-    console.log(this.dataCommon);
+    // console.log(this.dataCommon);
     for (let i = 0; i < this.data.length; i++) {
-      if (this.data[i].includes('pinata')) {
-        const metadata = await this.pinata.getMetadeta(
-          this.data[i].split('ipfs/')[1]
-        );
+      if (this.data[i].length == 46) {
+        const metadata = await this.pinata.getMetadeta(this.data[i]);
         console.log(metadata);
         const someCardMeta: CardMeta = {
-          imgUrl: environment.apiUrl + 'ipfs/' + this.data[i].split('ipfs/')[1],
+          imgUrl: environment.apiUrl + 'ipfs/' + this.data[i],
           damage: metadata.damage,
           maxHealth: metadata.health,
         };
         this.collection?.push(new Card(someCardMeta));
       }
     }
-    for (let i = 1; i < this.dataCommon.length; i++) {
-      const metadata = await this.pinata.getMetadeta(this.dataCommon[i]);
-      const someCardMeta: CardMeta = {
-        imgUrl: environment.apiUrl + 'ipfs/' + this.dataCommon[i],
-        damage: metadata.damage,
-        maxHealth: metadata.health,
-      };
-      this.collection?.push(new Card(someCardMeta));
-    }
+    // for (let i = 1; i < this.dataCommon.length; i++) {
+    //   const metadata = await this.pinata.getMetadeta(this.dataCommon[i]);
+    //   const someCardMeta: CardMeta = {
+    //     imgUrl: environment.apiUrl + 'ipfs/' + this.dataCommon[i],
+    //     damage: metadata.damage,
+    //     maxHealth: metadata.health,
+    //   };
+    //   this.collection?.push(new Card(someCardMeta));
+    // }
     this.collection.forEach((card) => {
       card.added = true;
     });
