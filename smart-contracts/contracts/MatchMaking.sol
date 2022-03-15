@@ -2,6 +2,7 @@
 pragma solidity ^0.8.0;
 
 import "@chainlink/contracts/src/v0.8/KeeperCompatible.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 struct Player {
     address addr;
@@ -11,6 +12,7 @@ struct Player {
 
 struct Card {
     uint hp;
+    uint maxHp;
     uint atk;
     string url;
 }
@@ -35,7 +37,13 @@ struct Match {
 contract MatchMaking is KeeperCompatibleInterface {
     Player[] queue;
     mapping(uint256 => Match) matches; 
+
     function joinQueue(address addr, uint stake) public {
+        require(
+            clashToken.transferFrom(msg.sender, address(this), stake),
+            "Pay Up"
+        );
+
         Player memory player = Player(addr, stake, true);
         queue.push(player);
     }
@@ -54,9 +62,11 @@ contract MatchMaking is KeeperCompatibleInterface {
 
     function getMatch(address addr, uint stake) public returns (Player memory opponent) {
         uint opponentIndex;
+        bool found = false;
         for(uint i = queue.length - 1; i >= 0; i--) {
             if (queue[i].active && queue[i].stake == stake && queue[i].addr != addr) {
                 opponentIndex = i;
+                found = true;
             }
 
             if (i == 0) {
@@ -64,13 +74,14 @@ contract MatchMaking is KeeperCompatibleInterface {
             }
         }
 
-        // TODO: error handling if opponentIndex go brr?
+        require(found, "Cannot find an opponent.");
+
         queue[opponentIndex].active = false;
         queue[getIndexOfPlayer(addr)].active = false;
         return queue[opponentIndex];
     }
 
-    event PublishMatchId(address p1, address p2, uint256 matchId);
+    event PublishMatchId(address indexed p1, address indexed p2, uint256 indexed matchId);
 
     function generateMatchID() private view returns (uint256 hash) {
         return uint256(keccak256(abi.encodePacked(block.difficulty, block.timestamp)));
@@ -95,14 +106,14 @@ contract MatchMaking is KeeperCompatibleInterface {
         }
     }
 
-    event OpponentCardSubmit(address opponent, uint256 matchId, Card card_1, Card card_2);
+    event OpponentCardSubmit(address indexed opponent, uint256 indexed matchId, Card card_1, Card card_2);
 
-    function submitCard(uint256 matchId, address player, uint hp_card1, uint atk_card1, string memory url_card1, uint hp_card2, uint atk_card2, string memory url_card2) public {
+    function submitCard(uint256 matchId, address player, uint hp_card1, uint maxHp_card1, uint atk_card1, string memory url_card1, uint hp_card2, uint maxHp_card2, uint atk_card2, string memory url_card2) public {
         Match memory currMatch = matches[matchId];
         uint len = currMatch.rounds.length;
         Round memory currRound = currMatch.rounds[len - 1];
-        Card memory card_1 = Card(hp_card1, atk_card1, url_card1);
-        Card memory card_2 = Card(hp_card2, atk_card2, url_card2);
+        Card memory card_1 = Card(hp_card1, maxHp_card1, atk_card1, url_card1);
+        Card memory card_2 = Card(hp_card2, maxHp_card2, atk_card2, url_card2);
         if (currMatch.p1.addr == player) {
             currRound.p1_card1 = card_1;
             currRound.p1_card2 = card_2;
@@ -119,7 +130,7 @@ contract MatchMaking is KeeperCompatibleInterface {
         }
     }
 
-    event EndOfRound(address p1, address p2, uint256 matchId, Round round);
+    event EndOfRound(address indexed p1, address indexed p2, uint256 indexed matchId, Round round);
 
     function startRound(uint256 matchId, Round memory round) private {
         uint p1_atk = round.p1_card1.atk + round.p1_card2.atk;
@@ -155,6 +166,13 @@ contract MatchMaking is KeeperCompatibleInterface {
         emit EndOfRound(p1, p2, matchId, round);
     }
 
+    function payWinner(uint256 amount) public {
+        require(
+            clashToken.transfer(msg.sender, amount),
+            "Could not pay winner"
+        );
+    }
+
     /**
     * Public counter variable
     **/
@@ -166,11 +184,16 @@ contract MatchMaking is KeeperCompatibleInterface {
     uint public immutable interval;
     uint public lastTimeStamp;
 
-    constructor(uint updateInterval) {
+    // clashtoken
+    IERC20 public clashToken;
+
+    constructor(uint updateInterval, address _clashTokenAddress) {
       interval = updateInterval;
       lastTimeStamp = block.timestamp;
 
       counter = 0;
+
+      clashToken = IERC20(_clashTokenAddress);
     }
 
     function checkUpkeep(bytes calldata /* checkData */) external view override returns (bool upkeepNeeded, bytes memory performData) {
