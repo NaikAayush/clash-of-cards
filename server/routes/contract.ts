@@ -1,12 +1,15 @@
 import { ethers, Wallet, utils } from "ethers";
 import { Router } from "express";
 import { readFileSync, writeFileSync } from "fs";
+import cron from "node-cron";
 
 import ClashOfCards from "../abis/ClashOfCards.json";
 import ClashToken from "../abis/ClashToken.json";
+import ClashMatchMaker from "../abis/ClashMatchMaking.json";
 
-let clashTokenAddress = "0x31fF5086cb3d0c62f7049Ff0164b1a41e3C64627";
-let clashNFTAddress = "0x8E4E2F6bf09fF635C6522b0633B03C7CB4548270";
+const clashTokenAddress = "0x31fF5086cb3d0c62f7049Ff0164b1a41e3C64627";
+const clashNFTAddress = "0x8E4E2F6bf09fF635C6522b0633B03C7CB4548270";
+const clashMatchMakingAddress = "0x9703761fA48279Be766f1139D02ae0857d7D51f5";
 
 const provider: ethers.providers.JsonRpcProvider =
   new ethers.providers.JsonRpcProvider(process.env.alchemyUrl);
@@ -61,7 +64,6 @@ export const contract = Router();
 contract.get("/token/:address", async (req, res) => {
   try {
     const address = req.params.address;
-    console.log(address);
     const tx = await mint(address);
     res.send(tx);
   } catch (error) {
@@ -72,10 +74,44 @@ contract.get("/token/:address", async (req, res) => {
 contract.get("/nft/:address", async (req, res) => {
   try {
     const address = req.params.address;
-    console.log(address);
     const tx = await mintNFT(address);
     res.send(tx);
   } catch (error) {
     res.send(error);
   }
 });
+
+function sleep(ms: number) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+}
+
+async function makeMatches() {
+  const contract = new ethers.utils.Interface(ClashMatchMaker.abi);
+  const data = contract.encodeFunctionData("pairOpponents");
+
+  for (; true; ) {
+    try {
+      console.log("Making matches");
+      const tx = await wallet.sendTransaction({
+        from: process.env.privateAddress,
+        to: clashMatchMakingAddress,
+        nonce: await provider.getTransactionCount(
+          process.env.privateAddress as string,
+          "latest"
+        ),
+        data: data,
+        gasLimit: 220000,
+      });
+      const resp = await tx.wait();
+      console.log("Made matches", resp);
+    } catch (error) {
+      console.log("match making failed with error", error);
+    }
+
+    sleep(5000);
+  }
+}
+
+makeMatches();
