@@ -19,6 +19,10 @@ import { Subscription, timer } from 'rxjs';
 import { Router } from '@angular/router';
 import { ScoreService } from 'src/app/services/score/score.service';
 import { ContractService } from 'src/app/services/contract.service';
+import { PinataService } from 'src/app/services/pinata.service';
+import { environment } from 'src/environments/environment';
+
+const IS_DEMO: boolean = true;
 
 @Component({
   selector: 'app-gaem',
@@ -65,30 +69,53 @@ export class GaemComponent implements OnInit {
     private service: GaemService,
     private router: Router,
     private scorer: ScoreService,
-    private contractService: ContractService
+    private contractService: ContractService,
+    private pinata: PinataService
   ) {
     this.service.onReset(() => {
       this.reset();
     });
 
-    const someCardMeta: CardMeta = {
-      imgUrl: '/assets/images/card-example.svg',
-      damage: 100,
-      maxHealth: 500,
-    };
-    this.enemyCards = [
-      new Card(someCardMeta),
-      new Card(someCardMeta),
-      new Card(someCardMeta),
-      new Card(someCardMeta),
-      new Card(someCardMeta),
-      new Card(someCardMeta),
-      new Card(someCardMeta),
-      new Card(someCardMeta),
-    ];
-    for (let i = 0; i < this.enemyCards.length; ++i) {
-      this.enemyCards[i].takeDamage((i + 1) * 60);
+    if (IS_DEMO) {
+      this.initEnemyCards();
     }
+  }
+
+  async initEnemyCards() {
+    this.waitingForResp = true;
+    const enemyCardIDs = [
+      'QmaudoYFwp2T7SrXN4eyrSPbkJmLD8Bz8asWD4ziwSYAbS',
+      'QmZvygJz48YSQo33xusrR2BG3Xm9G21u8q2DTxFFpZbZEV',
+      'QmS86bD99fhhW5EhKA6JrKX9bU5TwejXynaUtUPuGecirW',
+      'QmPPkwF5uBWQKzr9Uod3zJABLiwUB4YdKk995Gjprj1YMH',
+      'QmYt6H2azLBd1Hh4tFFg73mZsN2Ah7RUfCsVtfqT97Ldfz',
+      'QmYEFbMQtmtzf3BjtetHMfA37Ko78xvE8TV1ZgfNuLe1WB',
+      'Qmb3cGoEJqwn3XmR61NXMk3Av6nJeyh5fXs8F7BBNpw3J5',
+      'QmXewPV3ykrjusWHJadsfcL6r8pFMzqBrrXZCn2uFhrv6w',
+    ];
+
+    const enemyCardsMeta = await Promise.all(
+      enemyCardIDs.map(async (id) => {
+        const metadata = await this.pinata.getMetadeta(id);
+        const someCardMeta: CardMeta = {
+          imgUrl: environment.apiUrl + 'ipfs/' + id,
+          damage: metadata.damage,
+          maxHealth: metadata.health,
+        };
+
+        return someCardMeta;
+      })
+    );
+
+    this.enemyCards = enemyCardsMeta.map((meta) => new Card(meta));
+
+    console.log('Initialized enemy cards');
+
+    // for (let i = 0; i < this.enemyCards.length; ++i) {
+    //   this.enemyCards[i].takeDamage((i + 1) * 60);
+    // }
+
+    this.waitingForResp = false;
   }
 
   reset() {
@@ -109,19 +136,21 @@ export class GaemComponent implements OnInit {
     } else if (this.service.enemyAddress === undefined) {
       console.error("enemy address wasn't set aaa");
     } else {
-      this.contractService.listenForEnemyCard(
-        this.service.matchId,
-        this.service.enemyAddress,
-        (card1: Card, card2: Card) => {
-          this.enemyFightingZones[0][0] = card1;
-          this.enemyFightingZones[1][0] = card2;
+      if (!IS_DEMO) {
+        this.contractService.listenForEnemyCard(
+          this.service.matchId,
+          this.service.enemyAddress,
+          (card1: Card, card2: Card) => {
+            this.enemyFightingZones[0][0] = card1;
+            this.enemyFightingZones[1][0] = card2;
 
-          setTimeout(() => {
-            this.enemyFightingZones[0][0].added = true;
-            this.enemyFightingZones[1][0].added = true;
-          }, 500);
-        }
-      );
+            setTimeout(() => {
+              this.enemyFightingZones[0][0].added = true;
+              this.enemyFightingZones[1][0].added = true;
+            }, 500);
+          }
+        );
+      }
     }
   }
 
@@ -235,15 +264,18 @@ export class GaemComponent implements OnInit {
   }
 
   checkPlayerWin() {
-    // TODO: implement this
-    return false;
-    // if (
-    //   this.enemyCards.length == 0 &&
-    //   this.enemyFightingZones.filter((zone) => zone.length > 0).length == 0
-    // ) {
-    //   console.log('Win!');
-    //   this.showWinModal = true;
-    // }
+    if (IS_DEMO) {
+      if (
+        this.enemyCards.length == 0 &&
+        this.enemyFightingZones.filter((zone) => zone.length > 0).length == 0
+      ) {
+        console.log('Win!');
+        this.showWinModal = true;
+      }
+    } else {
+      // TODO: implement this
+      return;
+    }
   }
 
   async continue() {
@@ -273,86 +305,92 @@ export class GaemComponent implements OnInit {
       this.stopTimer();
       this.roundTimes.push(this.secondsElapsed);
 
-      if (this.service.matchId !== undefined) {
-        const cardSubmitProm = this.contractService.submitCards(
-          this.service.matchId,
-          this.fightingZones[0][0],
-          this.fightingZones[1][0]
-        );
+      if (!IS_DEMO) {
+        if (this.service.matchId !== undefined) {
+          const cardSubmitProm = this.contractService.submitCards(
+            this.service.matchId,
+            this.fightingZones[0][0],
+            this.fightingZones[1][0]
+          );
 
-        const roundEndProm = this.contractService.listenForRoundEnd(
-          this.service.matchId
-        );
+          const roundEndProm = this.contractService.listenForRoundEnd(
+            this.service.matchId
+          );
 
-        const data = await Promise.all([cardSubmitProm, roundEndProm]);
-        const round = data[1];
-        console.log('Round ended!', round);
+          const data = await Promise.all([cardSubmitProm, roundEndProm]);
+          const round = data[1];
+          console.log('Round ended!', round);
 
-        if (this.service.isPlayer1) {
-          const myDamages = [
-            this.fightingZones[0][0].health - round.p1_card1.hp.toNumber(),
-            this.fightingZones[1][0].health - round.p1_card2.hp.toNumber(),
-          ];
+          if (this.service.isPlayer1) {
+            const myDamages = [
+              this.fightingZones[0][0].health - round.p1_card1.hp.toNumber(),
+              this.fightingZones[1][0].health - round.p1_card2.hp.toNumber(),
+            ];
 
-          const enemyDamages = [
-            this.enemyFightingZones[0][0].health - round.p2_card1.hp.toNumber(),
-            this.enemyFightingZones[1][0].health - round.p2_card2.hp.toNumber(),
-          ];
+            const enemyDamages = [
+              this.enemyFightingZones[0][0].health -
+                round.p2_card1.hp.toNumber(),
+              this.enemyFightingZones[1][0].health -
+                round.p2_card2.hp.toNumber(),
+            ];
 
-          this.takeDamages(this.fightingZones, myDamages);
-          this.takeDamages(this.enemyFightingZones, enemyDamages);
+            this.takeDamages(this.fightingZones, myDamages);
+            this.takeDamages(this.enemyFightingZones, enemyDamages);
+          } else {
+            const myDamages = [
+              this.fightingZones[0][0].health - round.p2_card1.hp.toNumber(),
+              this.fightingZones[1][0].health - round.p2_card2.hp.toNumber(),
+            ];
+
+            const enemyDamages = [
+              this.enemyFightingZones[0][0].health -
+                round.p1_card1.hp.toNumber(),
+              this.enemyFightingZones[1][0].health -
+                round.p1_card2.hp.toNumber(),
+            ];
+
+            this.takeDamages(this.fightingZones, myDamages);
+            this.takeDamages(this.enemyFightingZones, enemyDamages);
+          }
+
+          this.roundCompleted();
+          this.resetTimer();
+          this.roundNum += 1;
+
+          if (this.noCardsLeft()) {
+            this.stopTimer();
+            this.showLoseModal = true;
+          }
         } else {
-          const myDamages = [
-            this.fightingZones[0][0].health - round.p2_card1.hp.toNumber(),
-            this.fightingZones[1][0].health - round.p2_card2.hp.toNumber(),
-          ];
-
-          const enemyDamages = [
-            this.enemyFightingZones[0][0].health - round.p1_card1.hp.toNumber(),
-            this.enemyFightingZones[1][0].health - round.p1_card2.hp.toNumber(),
-          ];
-
-          this.takeDamages(this.fightingZones, myDamages);
-          this.takeDamages(this.enemyFightingZones, enemyDamages);
-        }
-
-        this.roundCompleted();
-        this.resetTimer();
-        this.roundNum += 1;
-
-        if (this.noCardsLeft()) {
-          this.stopTimer();
-          this.showLoseModal = true;
+          console.error("Match ID wasn't set aaa");
         }
       } else {
-        console.error("Match ID wasn't set aaa");
+        setTimeout(() => {
+          // TODO: remove this sim
+          this.addEnemyCards();
+
+          setTimeout(() => {
+            this.waitingForResp = false;
+
+            const enemyDamages = this.enemyFightingZones.map(
+              (zone) => zone[0]?.meta.damage
+            );
+            this.takeDamages(this.fightingZones, enemyDamages);
+            const playerDamages = this.fightingZones.map(
+              (zone) => zone[0]?.meta.damage
+            );
+            this.takeDamages(this.enemyFightingZones, playerDamages);
+            this.roundCompleted();
+
+            this.resetTimer();
+            this.roundNum += 1;
+
+            if (this.noCardsLeft()) {
+              this.showLoseModal = true;
+            }
+          }, 1000);
+        }, 2000);
       }
-
-      // setTimeout(() => {
-      //   this.waitingForResp = false;
-
-      //   // TODO: remove this sim
-      //   this.addEnemyCards();
-
-      //   setTimeout(() => {
-      //     const enemyDamages = this.enemyFightingZones.map(
-      //       (zone) => zone[0]?.meta.damage
-      //     );
-      //     this.takeDamages(this.fightingZones, enemyDamages);
-      //     const playerDamages = this.fightingZones.map(
-      //       (zone) => zone[0]?.meta.damage
-      //     );
-      //     this.takeDamages(this.enemyFightingZones, playerDamages);
-      //     this.roundCompleted();
-
-      //     this.resetTimer();
-      //     this.roundNum += 1;
-
-      //     if (this.noCardsLeft()) {
-      //       this.showLoseModal = true;
-      //     }
-      //   }, 700);
-      // }, 2000);
     }
   }
 
