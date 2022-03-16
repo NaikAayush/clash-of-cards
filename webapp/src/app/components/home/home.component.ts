@@ -82,7 +82,6 @@ export class HomeComponent implements OnInit {
 
   async setupDashboard() {
     this.loading = true;
-    await this.contractService.gibMoni('909090');
     const nftBalance = await this.contractService.getNFTBalance();
     if (nftBalance == 0) {
       this.loading = true;
