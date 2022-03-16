@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { ContractService } from 'src/app/services/contract/contract.service';
+import { ContractService } from 'src/app/services/contract.service';
 import { environment } from 'src/environments/environment';
 import CardData from '../../../assets/data.json';
 @Component({

@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { ContractService } from 'src/app/services/contract/contract.service';
+import { ContractService } from 'src/app/services/contract.service';
 
 @Component({
   selector: 'app-card-item-market',

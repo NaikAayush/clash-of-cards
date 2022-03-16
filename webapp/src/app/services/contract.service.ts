@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
-import { EthersService } from '../ethers/ethers.service';
-import ClashToken from '../../../assets/abis/ClashToken.json';
-import ClashNFT from '../../../assets/abis/ClashOfCards.json';
-import ClashMatchMaking from '../../../assets/abis/ClashMatchMaking.json';
+import { EthersService } from './ethers/ethers.service';
+import ClashToken from '../../assets/abis/ClashToken.json';
+import ClashNFT from '../../assets/abis/ClashOfCards.json';
+import ClashMatchMaking from '../../assets/abis/ClashMatchMaking.json';
 import { BigNumber, ContractInterface } from 'ethers';
 import { Card } from 'src/app/models/card';
 
@@ -273,5 +273,19 @@ export class ContractService {
     );
 
     return prom;
+  }
+
+  async gibMoni(amount: string) {
+    await this.initContracts();
+    this.account = await this.ethersService.provider.send(
+      'eth_requestAccounts',
+      []
+    );
+    console.log(this.ethersService.utils.parseEther(amount).toString());
+    let tx = await this.clashTokenContract.mint(
+      this.account[0],
+      this.ethersService.utils.parseEther(amount).toString()
+    );
+    await tx.wait();
   }
 }

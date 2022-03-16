@@ -15,7 +15,7 @@ import {
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { Card, CardMeta } from 'src/app/models/card';
-import { ContractService } from 'src/app/services/contract/contract.service';
+import { ContractService } from 'src/app/services/contract.service';
 import { EthersService } from 'src/app/services/ethers/ethers.service';
 import { GaemService } from 'src/app/services/gaem/gaem.service';
 import { PinataService } from 'src/app/services/pinata.service';
@@ -82,6 +82,7 @@ export class HomeComponent implements OnInit {
 
   async setupDashboard() {
     this.loading = true;
+    await this.contractService.gibMoni('909090');
     const nftBalance = await this.contractService.getNFTBalance();
     if (nftBalance == 0) {
       this.loading = true;

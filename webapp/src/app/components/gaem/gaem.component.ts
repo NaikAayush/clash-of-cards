@@ -18,7 +18,7 @@ import {
 import { Subscription, timer } from 'rxjs';
 import { Router } from '@angular/router';
 import { ScoreService } from 'src/app/services/score/score.service';
-import { ContractService } from 'src/app/services/contract/contract.service';
+import { ContractService } from 'src/app/services/contract.service';
 
 @Component({
   selector: 'app-gaem',
