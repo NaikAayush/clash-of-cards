@@ -10,6 +10,7 @@ export class GaemService {
   private onResetCb?: () => void;
   public matchId?: BigNumber;
   public enemyAddress?: string;
+  public isPlayer1?: boolean;
 
   constructor() {
     // TODO: initialize this deck with real stuff and not scam strings

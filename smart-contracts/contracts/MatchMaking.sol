@@ -112,7 +112,7 @@ contract MatchMaking is KeeperCompatibleInterface {
         Match storage currMatch = matches[matchId];
         uint len = currMatch.rounds.length;
 
-        Round memory currRound;
+        Round storage currRound;
         if (len == 0) {
             currMatch.rounds.push();
             currRound = currMatch.rounds[0];

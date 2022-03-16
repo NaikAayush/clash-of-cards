@@ -235,13 +235,15 @@ export class GaemComponent implements OnInit {
   }
 
   checkPlayerWin() {
-    if (
-      this.enemyCards.length == 0 &&
-      this.enemyFightingZones.filter((zone) => zone.length > 0).length == 0
-    ) {
-      console.log('Win!');
-      this.showWinModal = true;
-    }
+    // TODO: implement this
+    return false;
+    // if (
+    //   this.enemyCards.length == 0 &&
+    //   this.enemyFightingZones.filter((zone) => zone.length > 0).length == 0
+    // ) {
+    //   console.log('Win!');
+    //   this.showWinModal = true;
+    // }
   }
 
   async continue() {
@@ -272,16 +274,56 @@ export class GaemComponent implements OnInit {
       this.roundTimes.push(this.secondsElapsed);
 
       if (this.service.matchId !== undefined) {
-        await this.contractService.submitCards(
+        const cardSubmitProm = this.contractService.submitCards(
           this.service.matchId,
           this.fightingZones[0][0],
           this.fightingZones[1][0]
         );
 
-        const round = await this.contractService.listenForRoundEnd(
+        const roundEndProm = this.contractService.listenForRoundEnd(
           this.service.matchId
         );
+
+        const data = await Promise.all([cardSubmitProm, roundEndProm]);
+        const round = data[1];
         console.log('Round ended!', round);
+
+        if (this.service.isPlayer1) {
+          const myDamages = [
+            this.fightingZones[0][0].health - round.p1_card1.hp.toNumber(),
+            this.fightingZones[1][0].health - round.p1_card2.hp.toNumber(),
+          ];
+
+          const enemyDamages = [
+            this.enemyFightingZones[0][0].health - round.p2_card1.hp.toNumber(),
+            this.enemyFightingZones[1][0].health - round.p2_card2.hp.toNumber(),
+          ];
+
+          this.takeDamages(this.fightingZones, myDamages);
+          this.takeDamages(this.enemyFightingZones, enemyDamages);
+        } else {
+          const myDamages = [
+            this.fightingZones[0][0].health - round.p2_card1.hp.toNumber(),
+            this.fightingZones[1][0].health - round.p2_card2.hp.toNumber(),
+          ];
+
+          const enemyDamages = [
+            this.enemyFightingZones[0][0].health - round.p1_card1.hp.toNumber(),
+            this.enemyFightingZones[1][0].health - round.p1_card2.hp.toNumber(),
+          ];
+
+          this.takeDamages(this.fightingZones, myDamages);
+          this.takeDamages(this.enemyFightingZones, enemyDamages);
+        }
+
+        this.roundCompleted();
+        this.resetTimer();
+        this.roundNum += 1;
+
+        if (this.noCardsLeft()) {
+          this.stopTimer();
+          this.showLoseModal = true;
+        }
       } else {
         console.error("Match ID wasn't set aaa");
       }

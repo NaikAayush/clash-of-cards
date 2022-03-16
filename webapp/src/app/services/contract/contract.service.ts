@@ -26,6 +26,15 @@ function toActualCard(contractCard: ContractCard): Card {
   return newCard;
 }
 
+interface ContractRound {
+  p1_card1: ContractCard;
+  p1_card2: ContractCard;
+  p1_ready: boolean;
+  p2_card1: ContractCard;
+  p2_card2: ContractCard;
+  p2_ready: boolean;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -115,7 +124,9 @@ export class ContractService {
     );
   }
 
-  async joinQueue(matchStartedCb: (_: BigNumber, __: string) => void) {
+  async joinQueue(
+    matchStartedCb: (_: BigNumber, __: string, isPlayer1: boolean) => void
+  ) {
     await this.initContracts();
     this.account = await this.ethersService.provider.send(
       'eth_requestAccounts',
@@ -142,7 +153,9 @@ export class ContractService {
     this.listenForMatchId(matchStartedCb);
   }
 
-  async listenForMatchId(matchStartedCb: (_: BigNumber, __: string) => void) {
+  async listenForMatchId(
+    matchStartedCb: (_: BigNumber, __: string, isPlayer1: boolean) => void
+  ) {
     await this.initContracts();
     this.account = await this.ethersService.provider.send(
       'eth_requestAccounts',
@@ -164,14 +177,14 @@ export class ContractService {
         this.currentMatchId = matchId;
         this.otherPlayerAddr = player2;
 
-        matchStartedCb(matchId, this.otherPlayerAddr);
+        matchStartedCb(matchId, this.otherPlayerAddr, true);
         this.clashMatchMakingContract.off(event, eventCb);
       } else if (player2 === myAddress) {
         console.log("Got match for me. I'm player 2.");
         this.currentMatchId = matchId;
         this.otherPlayerAddr = player1;
 
-        matchStartedCb(matchId, this.otherPlayerAddr);
+        matchStartedCb(matchId, this.otherPlayerAddr, false);
         this.clashMatchMakingContract.off(event, eventCb);
       } else {
         console.log('Not my match.');
@@ -242,15 +255,22 @@ export class ContractService {
   listenForRoundEnd(matchId: BigNumber) {
     const event = this.clashMatchMakingContract.filters.EndOfRound(matchId);
 
-    const prom = new Promise((resolve: (round: any) => void, reject) => {
-      this.clashMatchMakingContract.once(
-        event,
-        (matchId: BigNumber, player1: string, player2: string, round: any) => {
-          console.log('round was over', matchId, player1, player2, round);
-          resolve(round);
-        }
-      );
-    });
+    const prom = new Promise(
+      (resolve: (round: ContractRound) => void, reject) => {
+        this.clashMatchMakingContract.once(
+          event,
+          (
+            matchId: BigNumber,
+            player1: string,
+            player2: string,
+            round: ContractRound
+          ) => {
+            console.log('round was over', matchId, player1, player2, round);
+            resolve(round);
+          }
+        );
+      }
+    );
 
     return prom;
   }

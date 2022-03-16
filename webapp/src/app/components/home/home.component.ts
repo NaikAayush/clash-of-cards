@@ -198,11 +198,12 @@ export class HomeComponent implements OnInit {
       const selectedCards = this.selectedCardList?.map((arr) => arr[0]);
       this.gaemService.setDeckCards(selectedCards);
       await this.contractService.joinQueue(
-        (matchId: BigNumber, enemyAddress: string) => {
+        (matchId: BigNumber, enemyAddress: string, isPlayer1: boolean) => {
           console.log('Starting match with ID', matchId);
 
           this.gaemService.matchId = matchId;
           this.gaemService.enemyAddress = enemyAddress;
+          this.gaemService.isPlayer1 = isPlayer1;
 
           this.router.navigateByUrl('/gaem');
         }
