@@ -21,7 +21,7 @@ export class ScoreService {
       roundId < roundTimes.length && roundId < maxRounds;
       roundId++
     ) {
-      score -= timeMultiplier * (30 - roundTimes[roundId]);
+      score -= timeMultiplier * (90 - roundTimes[roundId]);
     }
 
     return score;
