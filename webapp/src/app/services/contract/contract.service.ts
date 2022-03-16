@@ -206,6 +206,15 @@ export class ContractService {
     console.log('Joined queue', tx);
   }
 
+  async getNFTBalance() {
+    await this.initContracts();
+    this.account = await this.ethersService.provider.send(
+      'eth_requestAccounts',
+      []
+    );
+    return await this.clashNFTContract.balanceOf(this.account[0]);
+  }
+
   async listenForEnemyCard(matchId: BigNumber, enemyAddress: string) {
     const event = this.clashMatchMakingContract.filters.OpponentCardSubmit(
       enemyAddress,
