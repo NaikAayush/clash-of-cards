@@ -84,14 +84,15 @@ export class GaemComponent implements OnInit {
   async initEnemyCards() {
     this.waitingForResp = true;
     const enemyCardIDs = [
-      'QmaudoYFwp2T7SrXN4eyrSPbkJmLD8Bz8asWD4ziwSYAbS',
-      'QmZvygJz48YSQo33xusrR2BG3Xm9G21u8q2DTxFFpZbZEV',
-      'QmS86bD99fhhW5EhKA6JrKX9bU5TwejXynaUtUPuGecirW',
-      'QmPPkwF5uBWQKzr9Uod3zJABLiwUB4YdKk995Gjprj1YMH',
-      'QmYt6H2azLBd1Hh4tFFg73mZsN2Ah7RUfCsVtfqT97Ldfz',
-      'QmYEFbMQtmtzf3BjtetHMfA37Ko78xvE8TV1ZgfNuLe1WB',
-      'Qmb3cGoEJqwn3XmR61NXMk3Av6nJeyh5fXs8F7BBNpw3J5',
-      'QmXewPV3ykrjusWHJadsfcL6r8pFMzqBrrXZCn2uFhrv6w',
+      'QmdgWrQbFmM7NufQ8iha1MHnpxrpnKU9uJZfxaFEwNm4dv',
+      'QmcS5haCaAFYSKuRKtwUuTr6QeHij7u5hphBhWBAmFj56b',
+      'QmNM4yD8chQEizpZWvrgVE3yV1iBRqPaDp3FqYhKPURajg',
+      'QmTLPmnSeKwgWFiKvDfuLXkBEuFFpaUYPLdLtighRhw8F2',
+
+      'QmaP8Pyca9v2W4fggHAz6TUPkVCcFyuY8aG2hsjq5U8zk1',
+      'QmVVve2Ze6UZZSKfgJZCo4DGR8oUTxiuAfvf28k1KeRupg',
+      'Qmf1yWvchtMAQ8bBYhna5V4HBJxTTUAwQozz8HmaR978pq',
+      'QmPZdjbkXyJF6kjj8B5ysFh7mJMjqGBV9AQCyQUUFyg3be',
     ];
 
     const enemyCardsMeta = await Promise.all(
