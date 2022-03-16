@@ -111,7 +111,16 @@ export class GaemComponent implements OnInit {
     } else {
       this.contractService.listenForEnemyCard(
         this.service.matchId,
-        this.service.enemyAddress
+        this.service.enemyAddress,
+        (card1: Card, card2: Card) => {
+          this.enemyFightingZones[0][0] = card1;
+          this.enemyFightingZones[1][0] = card2;
+
+          setTimeout(() => {
+            this.enemyFightingZones[0][0].added = true;
+            this.enemyFightingZones[1][0].added = true;
+          }, 500);
+        }
       );
     }
   }
@@ -268,6 +277,11 @@ export class GaemComponent implements OnInit {
           this.fightingZones[0][0],
           this.fightingZones[1][0]
         );
+
+        const round = await this.contractService.listenForRoundEnd(
+          this.service.matchId
+        );
+        console.log('Round ended!', round);
       } else {
         console.error("Match ID wasn't set aaa");
       }

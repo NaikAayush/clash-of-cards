@@ -203,7 +203,7 @@ export class ContractService {
       card2.meta.imgUrl
     );
     await tx.wait();
-    console.log('Joined queue', tx);
+    console.log('submitted cards', tx);
   }
 
   async getNFTBalance() {
@@ -215,7 +215,11 @@ export class ContractService {
     return await this.clashNFTContract.balanceOf(this.account[0]);
   }
 
-  async listenForEnemyCard(matchId: BigNumber, enemyAddress: string) {
+  async listenForEnemyCard(
+    matchId: BigNumber,
+    enemyAddress: string,
+    cb: (card1: Card, card2: Card) => void
+  ) {
     const event = this.clashMatchMakingContract.filters.OpponentCardSubmit(
       enemyAddress,
       matchId
@@ -223,8 +227,14 @@ export class ContractService {
 
     this.clashMatchMakingContract.on(
       event,
-      (enemyAddress: string, matchId: BigNumber, card1: any, card2: any) => {
+      (
+        enemyAddress: string,
+        matchId: BigNumber,
+        card1: ContractCard,
+        card2: ContractCard
+      ) => {
         console.log('Got enemy cards', enemyAddress, matchId, card1, card2);
+        cb(toActualCard(card1), toActualCard(card2));
       }
     );
   }
@@ -232,7 +242,7 @@ export class ContractService {
   listenForRoundEnd(matchId: BigNumber) {
     const event = this.clashMatchMakingContract.filters.EndOfRound(matchId);
 
-    const prom = new Promise((resolve, reject) => {
+    const prom = new Promise((resolve: (round: any) => void, reject) => {
       this.clashMatchMakingContract.once(
         event,
         (matchId: BigNumber, player1: string, player2: string, round: any) => {

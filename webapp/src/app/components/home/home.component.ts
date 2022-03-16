@@ -92,6 +92,7 @@ export class HomeComponent implements OnInit {
       await this.serverService.mintInitNFT(account[0]);
       await this.serverService.mintInitToken(account[0]);
       this.loading = false;
+      window.location.reload();
     }
     this.data = await this.contractService.getNFTs();
     this.balance = (await this.contractService.getBalance()).split('.')[0];
