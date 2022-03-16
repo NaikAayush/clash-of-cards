@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BigNumber, ContractInterface, ethers, Signer, utils } from 'ethers';
+import { Observable, of } from 'rxjs';
+
 declare let window: any;
 
 @Injectable({
@@ -9,10 +11,37 @@ export class EthersService {
   provider: any;
   signer?: Signer;
   utils = utils;
-
+  loggedIn = false;
   constructor() {
+    // this.provider = new ethers.providers.Web3Provider(window.ethereum, 'any');
+  }
+
+  authState() {
+    return new Observable((observer) => {
+      setInterval(() => {
+        if (this.loggedIn) {
+          observer.next(this.loggedIn);
+          observer.complete();
+        } else {
+          observer.next(this.loggedIn);
+        }
+      }, 1000);
+    });
+  }
+
+  async loginMetamask() {
     if (window.ethereum) {
       this.provider = new ethers.providers.Web3Provider(window.ethereum, 'any');
+      await this.provider.send('eth_requestAccounts', []);
+      this.signer = this.provider.getSigner();
+      this.loggedIn = true;
+    } else {
+      var ask = window.confirm(
+        'Metamask is not detected, you can use sequence.\nDo you want to install Metamask?'
+      );
+      if (ask) {
+        window.open('https://metamask.io');
+      }
     }
   }
 

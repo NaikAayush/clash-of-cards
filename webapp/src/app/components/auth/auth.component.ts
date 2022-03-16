@@ -19,17 +19,18 @@ export class AuthComponent implements OnInit {
   ) {}
 
   async ngOnInit() {
-    if (await this.ethersService.isLoggedIn()) {
-      this.modalShow = false;
-    } else {
-      setTimeout(() => {
-        this.modalShow = true;
-      }, 1000);
-    }
+    this.modalShow = true;
+    // if (await this.ethersService.isLoggedIn()) {
+    //   this.modalShow = false;
+    // } else {
+    //   setTimeout(() => {
+    //     this.modalShow = true;
+    //   }, 1000);
+    // }
   }
 
   async login() {
-    await this.ethersService.initEthers();
+    await this.ethersService.loginMetamask();
     this.modalShow = false;
   }
   async loginSequence() {

@@ -1,0 +1,22 @@
+.card {
+  width: 400px;
+  height: 200px;
+  position: relative;
+  background: #00bcd4;
+  border-radius: 3px;
+  background-position: top center;
+  transform-style: preserve-3d;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.card::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 8px;
+  border-radius: 50%;
+  left: 0;
+  bottom: 0px;
+  box-shadow: 0 30px 20px rgba(0, 0, 0, 0.3);
+}

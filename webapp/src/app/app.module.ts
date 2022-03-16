@@ -16,6 +16,7 @@ import { CardItemMarketComponent } from './components/marketplace/card-item-mark
 import { HttpClientModule } from '@angular/common/http';
 import { LandingComponent } from './components/landing/landing.component';
 import { LeaderbaordComponent } from './components/leaderbaord/leaderbaord.component';
+import { AngularTiltModule } from 'angular-tilt';
 
 @NgModule({
   declarations: [
@@ -40,6 +41,7 @@ import { LeaderbaordComponent } from './components/leaderbaord/leaderbaord.compo
     AppRoutingModule,
     DragDropModule,
     HttpClientModule,
+    AngularTiltModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

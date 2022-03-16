@@ -6,12 +6,28 @@ import {
   transferArrayItem,
 } from '@angular/cdk/drag-drop';
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import {
+  Component,
+  DoCheck,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+} from '@angular/core';
 import { Router } from '@angular/router';
 import { Card, CardMeta } from 'src/app/models/card';
-import { ContractService } from 'src/app/services/contract/contract.service';
+import { ContractService } from 'src/app/services/contract.service';
+import { EthersService } from 'src/app/services/ethers/ethers.service';
 import { GaemService } from 'src/app/services/gaem/gaem.service';
+import { PinataService } from 'src/app/services/pinata.service';
+import { ServerService } from 'src/app/services/server.service';
 import { environment } from 'src/environments/environment';
+import { BigNumber, ContractInterface, ethers, Signer, utils } from 'ethers';
+
+declare global {
+  interface Window {
+    ethereum: any;
+  }
+}
 
 @Component({
   selector: 'app-home',
@@ -19,8 +35,9 @@ import { environment } from 'src/environments/environment';
   styleUrls: ['./home.component.css'],
 })
 export class HomeComponent implements OnInit {
+  loading = false;
   collection: Card[] = [];
-  collectionDropList?: Card[][];
+  collectionDropList: Card[][] = [];
   selectedCardList: Card[][] = [];
   selectedZoneIds = Array.from(Array(10).keys()).map(
     (i) => `selected-zone-${i}`
@@ -29,32 +46,69 @@ export class HomeComponent implements OnInit {
   balance: string = '0';
   data: Array<string> = [];
   dataCommon: Array<string> = [];
+  status = false;
 
   constructor(
     private gaemService: GaemService,
     private router: Router,
     private contractService: ContractService,
-    private http: HttpClient
+    private http: HttpClient,
+    private pinata: PinataService,
+    private ethersService: EthersService,
+    private serverService: ServerService
   ) {
-    // TODO: remove dis
+    const observer = {
+      next: function (value: any) {
+        console.log(value);
+      },
+      error: function (value: any) {
+        console.log(value);
+      },
+      complete: function () {
+        console.log('complete');
+      },
+    };
+    let status: boolean;
+    this.ethersService.authState().subscribe((data: any) => {
+      this.status = data;
+      console.log(this.status);
+      if (this.status == true) {
+        this.setupDashboard();
+      }
+    });
   }
 
-  async ngOnInit() {
+  async ngOnInit() {}
+
+  async setupDashboard() {
+    this.loading = true;
+    const nftBalance = await this.contractService.getNFTBalance();
+    if (nftBalance == 0) {
+      this.loading = true;
+      const account = await this.ethersService.provider.send(
+        'eth_requestAccounts',
+        []
+      );
+      await this.serverService.mintInitNFT(account[0]);
+      await this.serverService.mintInitToken(account[0]);
+      this.loading = false;
+      window.location.reload();
+    }
     this.data = await this.contractService.getNFTs();
-    this.balance = await (
-      await this.contractService.getBalance()
-    ).split('.')[0];
+    this.balance = (await this.contractService.getBalance()).split('.')[0];
     await this.newUser();
-    console.log(this.dataCommon);
-    for (let i = 1; i < this.dataCommon.length; i++) {
-      const someCardMeta: CardMeta = {
-        imgUrl: '/assets/images/card-example.svg',
-        damage: 100,
-        maxHealth: 500,
-      };
-      someCardMeta.imgUrl =
-        'https://mygateway.mypinata.cloud/ipfs/' + this.dataCommon[i];
-      this.collection?.push(new Card(someCardMeta));
+    console.log(this.data);
+    for (let i = 0; i < this.data.length; i++) {
+      if (this.data[i].length == 46) {
+        const metadata = await this.pinata.getMetadeta(this.data[i]);
+        console.log(metadata);
+        const someCardMeta: CardMeta = {
+          imgUrl: environment.apiUrl + 'ipfs/' + this.data[i],
+          damage: metadata.damage,
+          maxHealth: metadata.health,
+        };
+        this.collection?.push(new Card(someCardMeta));
+      }
     }
     this.collection.forEach((card) => {
       card.added = true;
@@ -65,6 +119,18 @@ export class HomeComponent implements OnInit {
       Array(this.collectionDropList.length).keys()
     ).map((i) => `collection-zone-${i}`);
     this.selectedCardList = Array.from({ length: 8 }, () => []);
+    console.log(this.collection);
+    this.loading = false;
+
+    // for (let i = 1; i < this.dataCommon.length; i++) {
+    //   const metadata = await this.pinata.getMetadeta(this.dataCommon[i]);
+    //   const someCardMeta: CardMeta = {
+    //     imgUrl: environment.apiUrl + 'ipfs/' + this.dataCommon[i],
+    //     damage: metadata.damage,
+    //     maxHealth: metadata.health,
+    //   };
+    //   this.collection?.push(new Card(someCardMeta));
+    // }
   }
 
   async newUser() {
@@ -113,7 +179,7 @@ export class HomeComponent implements OnInit {
     return drop.data.length === 0;
   }
 
-  goToBattle() {
+  async goToBattle() {
     const allSelectedFilled =
       this.selectedCardList?.filter((arr) => arr.length > 0).length == 8;
 
@@ -127,10 +193,21 @@ export class HomeComponent implements OnInit {
     }
 
     if (toContinue) {
+      this.loading = true;
       console.log(message);
       const selectedCards = this.selectedCardList?.map((arr) => arr[0]);
       this.gaemService.setDeckCards(selectedCards);
-      this.router.navigateByUrl('/gaem');
+      await this.contractService.joinQueue(
+        (matchId: BigNumber, enemyAddress: string, isPlayer1: boolean) => {
+          console.log('Starting match with ID', matchId);
+
+          this.gaemService.matchId = matchId;
+          this.gaemService.enemyAddress = enemyAddress;
+          this.gaemService.isPlayer1 = isPlayer1;
+
+          this.router.navigateByUrl('/gaem');
+        }
+      );
     }
   }
 }

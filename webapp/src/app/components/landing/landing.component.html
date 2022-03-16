@@ -1,8 +1,179 @@
-<div class="w-screen h-screen overflow-scroll">
-  <img
-    routerLink="dashboard"
-    class="w-screen cursor-pointer"
-    src="assets/images/Landing.svg"
-    alt=""
-  />
+<div
+  class="flex flex-col w-screen bg-cover min-h-screen bg-[url('assets/images/landing-bg.svg')] items-center"
+>
+  <!-- NavBar -->
+  <div
+    class="flex flex-row h-28 px-8 py-4 justify-between items-center w-full max-w-7xl"
+  >
+    <img src="assets/images/logo-text.svg" alt="" />
+    <button
+      routerLink="dashboard"
+      class="bg-pink-main hover:bg-pink-hover rounded-2xl text-white px-6 py-3 h-min shadow-pinkBtn font-bold text-xl hover:shadow-none hover:translate-y-[6px] ease-in-out duration-100"
+    >
+      Launch App
+    </button>
+  </div>
+
+  <!-- Hero Section -->
+  <div class="flex flex-row items-center justify-around py-20 w-full max-w-7xl">
+    <div>
+      <div class="font-normal text-5xl py-2">Collect, Buy and Win</div>
+      <div class="font-bold text-7xl mb-2">NFT Monsters</div>
+      <div class="font-normal text-2xl pb-6 pt-2">Play now for free!</div>
+      <button
+        routerLink="dashboard"
+        class="bg-yellow-main hover:bg-yellow-hover rounded-2xl text-black px-6 py-3 h-min shadow-yellowBtn font-bold text-xl hover:shadow-none hover:translate-y-[6px] ease-in-out duration-100"
+      >
+        Launch App
+      </button>
+    </div>
+    <div>
+      <img aTilt src="assets/images/seth.svg" alt="" />
+    </div>
+  </div>
+
+  <!-- Cards Section -->
+  <div class="flex flex-col items-center justify-around w-full max-w-7xl pb-20">
+    <div class="flex flex-row items-center justify-around p-12 gap-4">
+      <img class="h-20" src="assets/images/fire.svg" alt="" />
+      <p class="font-bold text-7xl">Monster Cards</p>
+    </div>
+    <div class="flex flex-row items-center justify-around w-full">
+      <div
+        aTilt
+        [tiltSettings]="scaleSetting"
+        class="flex flex-col justify-center items-center cursor-pointer gap-3"
+      >
+        <img src="assets/images/common.svg" alt="" />
+        <p class="font-bold text-2xl">Common</p>
+      </div>
+      <div
+        aTilt
+        [tiltSettings]="scaleSetting"
+        class="flex flex-col justify-center items-center cursor-pointer gap-3"
+      >
+        <img src="assets/images/rare.svg" alt="" />
+        <p class="font-bold text-2xl">Rare</p>
+      </div>
+      <div
+        aTilt
+        [tiltSettings]="scaleSetting"
+        class="flex flex-col justify-center items-center cursor-pointer gap-3"
+      >
+        <img src="assets/images/super-rare.svg" alt="" />
+        <p class="font-bold text-2xl">Super Rare</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Details Section -->
+  <div class="flex flex-row items-center justify-around py-20 w-full max-w-7xl">
+    <div>
+      <img src="assets/images/monstor.svg" alt="" />
+    </div>
+    <div class="flex flex-col gap-6">
+      <div class="flex flex-row justify-start items-center gap-8">
+        <img src="assets/images/1.svg" class="h-16" alt="" />
+        <p class="font-bold text-3xl">Buy and Sell NFT Cards</p>
+      </div>
+      <div class="flex flex-row justify-start items-center gap-8">
+        <img src="assets/images/2.svg" class="h-16" alt="" />
+        <p class="font-bold text-3xl">Go to battle and Win Cards</p>
+      </div>
+      <div class="flex flex-row justify-start items-center gap-8">
+        <img src="assets/images/3.svg" class="h-16" alt="" />
+        <p class="font-bold text-3xl">Weekly leader Boards</p>
+      </div>
+      <div class="flex flex-row justify-start items-center gap-8">
+        <img src="assets/images/4.svg" class="h-16" alt="" />
+        <p class="font-bold text-3xl">Collect Rare and Super Rare Cards</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Built Using Section -->
+  <div class="flex flex-col items-center justify-around w-full max-w-7xl pb-20">
+    <div class="flex flex-row items-center justify-around p-12 gap-4">
+      <p class="font-bold text-7xl">Built Using</p>
+    </div>
+    <div class="flex flex-row items-center justify-around w-full">
+      <div
+        aTilt
+        [tiltSettings]="scaleLogoSetting"
+        class="flex flex-col justify-center items-center cursor-pointer gap-3"
+      >
+        <img src="assets/logos/1.svg" alt="" />
+        <p class="font-bold text-2xl">Pinata</p>
+      </div>
+      <div
+        aTilt
+        [tiltSettings]="scaleLogoSetting"
+        class="flex flex-col justify-center items-center cursor-pointer gap-3"
+      >
+        <img src="assets/logos/2.svg" alt="" />
+        <p class="font-bold text-2xl">Polygon Studios</p>
+      </div>
+      <div
+        aTilt
+        [tiltSettings]="scaleLogoSetting"
+        class="flex flex-col justify-center items-center cursor-pointer gap-3"
+      >
+        <img src="assets/logos/3.svg" alt="" />
+        <p class="font-bold text-2xl">Chainlink</p>
+      </div>
+      <div
+        aTilt
+        [tiltSettings]="scaleLogoSetting"
+        class="flex flex-col justify-center items-center cursor-pointer gap-3"
+      >
+        <img src="assets/logos/4.svg" alt="" />
+        <p class="font-bold text-2xl">Sequence</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Authors Using Section -->
+  <div class="flex flex-col items-center justify-around w-full max-w-7xl pb-20">
+    <div class="flex flex-row items-center justify-around p-12 gap-4">
+      <p class="font-bold text-7xl">The Team</p>
+    </div>
+    <div class="flex flex-row items-center justify-around w-full">
+      <div
+        (click)="goToLink('https://github.com/Samyak2')"
+        aTilt
+        [tiltSettings]="scaleLogoSetting"
+        class="flex flex-col justify-center items-center cursor-pointer gap-3"
+      >
+        <img src="assets/images/samyak.svg" alt="" />
+        <p class="font-bold text-2xl">Samyak Sarnayak</p>
+      </div>
+      <div
+        (click)="goToLink('https://github.com/Supritha1901')"
+        aTilt
+        [tiltSettings]="scaleLogoSetting"
+        class="flex flex-col justify-center items-center cursor-pointer gap-3"
+      >
+        <img src="assets/images/supritha.svg" alt="" />
+        <p class="font-bold text-2xl">Supritha Shivakumar</p>
+      </div>
+      <div
+        (click)="goToLink('https://github.com/psiayn')"
+        aTilt
+        [tiltSettings]="scaleLogoSetting"
+        class="flex flex-col justify-center items-center cursor-pointer gap-3"
+      >
+        <img src="assets/images/pranav.svg" alt="" />
+        <p class="font-bold text-2xl">Pranav Kesavarapu</p>
+      </div>
+      <div
+        (click)="goToLink('https://github.com/NaikAayush')"
+        aTilt
+        [tiltSettings]="scaleLogoSetting"
+        class="flex flex-col justify-center items-center cursor-pointer gap-3"
+      >
+        <img src="assets/images/aayush.png" alt="" />
+        <p class="font-bold text-2xl">Aayush Naik</p>
+      </div>
+    </div>
+  </div>
 </div>

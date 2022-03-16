@@ -1,12 +1,16 @@
 import { Injectable } from '@angular/core';
+import { BigNumber } from 'ethers';
 import { Card, CardMeta } from 'src/app/models/card';
 
 @Injectable({
   providedIn: 'root',
 })
 export class GaemService {
-  private deckCards: Card[];
+  public deckCards: Card[];
   private onResetCb?: () => void;
+  public matchId?: BigNumber;
+  public enemyAddress?: string;
+  public isPlayer1?: boolean;
 
   constructor() {
     // TODO: initialize this deck with real stuff and not scam strings

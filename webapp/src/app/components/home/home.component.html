@@ -1,11 +1,12 @@
 <div
+  *ngIf="!loading"
   class="flex flex-row bg-[url('assets/images/home-bg.svg')] h-screen w-screen bg-cover items-center justify-center"
 >
   <div class="wrapper mx-16 w-2/5">
     <div class="text-4xl font-semibold p-2">My Collection</div>
     <div class="box w-full overflow-y-scroll">
       <div
-        class="relative flex flex-row flex-wrap gap-8 p-8 items-center justify-center"
+        class="relative flex flex-row flex-wrap gap-8 p-4 items-center justify-center"
         cdkDropListGroup
       >
         <div
@@ -49,7 +50,7 @@
   <div class="flex flex-col h-full w-3/5 items-center justify-center">
     <div class="text-2xl font-semibold">Choose 8 cards for a face off</div>
     <div
-      class="flex flex-row flex-wrap p-8 gap-8 mx-24 justify-center items-center"
+      class="flex flex-row flex-wrap p-8 gap-8 justify-center items-center"
       cdkDropListGroup
     >
       <div
@@ -87,6 +88,7 @@
   </div>
 </div>
 <div
+  *ngIf="!loading"
   class="flex flex-row items-center justify-center p-8 absolute top-0 right-0 gap-4"
 >
   <img class="h-14 md:h-20" src="assets/images/coin.svg" alt="" />
@@ -97,3 +99,5 @@
 >
   <img class="h-14 md:h-20" src="assets/images/logo-text.svg" alt="" />
 </div>
+<app-loader *ngIf="loading"></app-loader>
+<app-auth></app-auth>
