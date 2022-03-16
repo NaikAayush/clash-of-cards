@@ -5,8 +5,8 @@ import { readFileSync, writeFileSync } from "fs";
 import ClashOfCards from "../abis/ClashOfCards.json";
 import ClashToken from "../abis/ClashToken.json";
 
-let clashTokenAddress = "0x4058aBB6a8Db6950a4C5CFdb01027B9BaAbbCc67";
-let clashNFTAddress = "0xF122a37Ee4A62ECDd36F6cAF9dfA7c4AECDe09CF";
+let clashTokenAddress = "0x31fF5086cb3d0c62f7049Ff0164b1a41e3C64627";
+let clashNFTAddress = "0x8E4E2F6bf09fF635C6522b0633B03C7CB4548270";
 
 const provider: ethers.providers.JsonRpcProvider =
   new ethers.providers.JsonRpcProvider(process.env.alchemyUrl);
@@ -56,33 +56,26 @@ async function mintNFT(address: string) {
   return tx;
 }
 
-async function cancel() {
-  let tx;
-  try {
-    tx = await wallet.sendTransaction({
-      from: process.env.privateAddress,
-      to: ethers.constants.AddressZero,
-      gasLimit: 220000,
-      nonce: 0,
-      data: "0x",
-    });
-  } catch (error) {
-    tx = { error: error };
-  }
-  console.log(tx);
-  return tx;
-}
-
 export const contract = Router();
 
 contract.get("/token/:address", async (req, res) => {
-  const address = req.params.address;
-  const tx = await mint(address);
-  res.send(tx);
+  try {
+    const address = req.params.address;
+    console.log(address);
+    const tx = await mint(address);
+    res.send(tx);
+  } catch (error) {
+    res.send(error);
+  }
 });
 
 contract.get("/nft/:address", async (req, res) => {
-  const address = req.params.address;
-  const tx = await mintNFT(address);
-  res.send(tx);
+  try {
+    const address = req.params.address;
+    console.log(address);
+    const tx = await mintNFT(address);
+    res.send(tx);
+  } catch (error) {
+    res.send(error);
+  }
 });
