@@ -271,6 +271,11 @@ export class GaemComponent implements OnInit {
       ) {
         console.log('Win!');
         this.showWinModal = true;
+
+        this.waitingForResp = true;
+        this.contractService.gibMoni(this.coinsEarned.toString()).then(() => {
+          this.waitingForResp = false;
+        });
       }
     } else {
       // TODO: implement this
